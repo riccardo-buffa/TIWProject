@@ -1,4 +1,4 @@
-package it.com.aste.model;
+package it.polimi.model;
 
 import java.sql.Timestamp;
 import java.io.Serializable;

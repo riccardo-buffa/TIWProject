@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.aste.model.User" %>
+<%@ page import="it.polimi.model.User" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
