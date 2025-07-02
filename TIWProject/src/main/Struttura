@@ -30,3 +30,42 @@ aste-online-html-pura/
 │           └── error.jsp              [Gestione errori]
 └── target/
     └── aste-online.war
+
+AsteOnline/
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── aste/
+│       │           ├── model/
+│       │           │   ├── Utente.java
+│       │           │   ├── Articolo.java
+│       │           │   ├── Asta.java
+│       │           │   └── Offerta.java
+│       │           ├── dao/
+│       │           │   ├── DatabaseConnection.java
+│       │           │   ├── UtenteDAO.java
+│       │           │   ├── ArticoloDAO.java
+│       │           │   ├── AstaDAO.java
+│       │           │   └── OffertaDAO.java
+│       │           ├── servlet/
+│       │           │   ├── LoginServlet.java
+│       │           │   ├── HomeServlet.java
+│       │           │   ├── VendoServlet.java
+│       │           │   ├── AcquistoServlet.java
+│       │           │   ├── DettaglioAstaServlet.java
+│       │           │   ├── OffertaServlet.java
+│       │           │   ├── CreaArticoloServlet.java
+│       │           │   ├── CreaAstaServlet.java
+│       │           │   └── ChiudiAstaServlet.java
+│       │           └── util/
+│       │               └── DateUtil.java
+│       └── webapp/
+│           ├── WEB-INF/
+│           │   ├── web.xml
+│           │   └── lib/
+│           │       └── mysql-connector-java-8.0.33.jar
+│           ├── css/
+│           │   └── style.css
+│           └── login.html (pagina iniziale statica)
+└── pom.xml
