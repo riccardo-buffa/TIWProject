@@ -1,44 +1,50 @@
 package it.polimi.dao;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static DataSource dataSource;
+    private static final String URL = "jdbc:mysql://localhost:3306/aste_online";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "ricky2003"; // CAMBIA CON TUA PASSWORD!
+
+    private static final String FULL_URL = URL +
+            "?useSSL=false" +
+            "&serverTimezone=Europe/Rome" +
+            "&characterEncoding=UTF-8" +
+            "&useUnicode=true" +
+            "&allowPublicKeyRetrieval=true";
 
     static {
         try {
-            Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup("java:/comp/env");
-            dataSource = (DataSource) envContext.lookup("jdbc/AsteDB");
-            System.out.println("✅ DataSource configurato con connection pooling");
-        } catch (Exception e) {
-            System.err.println("❌ Errore configurazione DataSource: " + e.getMessage());
-            // Fallback alla connessione diretta
-            try {
-				getDirectConnection();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("✅ Driver MySQL caricato correttamente");
+        } catch (ClassNotFoundException e) {
+            System.err.println("❌ ERRORE: Driver MySQL non trovato!");
+            e.printStackTrace();
         }
     }
 
     public static Connection getConnection() throws SQLException {
-        if (dataSource != null) {
-            return dataSource.getConnection();
-        } else {
-            return getDirectConnection();
+        try {
+            Connection conn = DriverManager.getConnection(FULL_URL, USERNAME, PASSWORD);
+            System.out.println("✅ Connessione database stabilita");
+            return conn;
+        } catch (SQLException e) {
+            System.err.println("❌ ERRORE connessione database: " + e.getMessage());
+            throw e;
         }
     }
 
-    // Metodo fallback
-    private static Connection getDirectConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/aste_online?useSSL=false&serverTimezone=Europe/Rome";
-        return DriverManager.getConnection(url, "aste_user", "aste_password123");
+    public static void closeConnection(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.close();
+                System.out.println("✅ Connessione database chiusa");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

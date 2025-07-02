@@ -80,13 +80,6 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>${mysql.version}</version>
     </dependency>
-
-    <!-- LOGGING CON LOGBACK -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-    </dependency>
   </dependencies>
 
   <!-- ===== BUILD CONFIGURATION ===== -->
