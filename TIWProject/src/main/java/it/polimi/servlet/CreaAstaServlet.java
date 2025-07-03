@@ -53,10 +53,10 @@ public class CreaAstaServlet extends HttpServlet {
             System.out.println("🎯 [Jakarta] Creazione asta con " + articoliIds.size() + " articoli per utente: " + utente.getUsername());
 
             // Calcola prezzo iniziale
-            List<Articolo> articoli = new ArrayList<>();
-            for (Integer id : articoliIds) {
-                articoli.add(articoloDAO.getArticoloById(id));
-            }
+            List<Articolo> articoli = articoloDAO.getArticoliByIds(articoliIds);
+
+
+
             double prezzoIniziale = 0.0;
             for (Articolo articolo : articoli) {
                 prezzoIniziale += articolo.getPrezzo();

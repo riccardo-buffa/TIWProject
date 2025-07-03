@@ -2,12 +2,16 @@ package it.polimi.dao;
 
 import it.polimi.model.Asta;
 import it.polimi.model.Articolo;
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AstaDAO {
+    private ArticoloDAO articoloDAO = new ArticoloDAO();
+
+    /**
+     * Crea una nuova asta
+     */
     public boolean creaAsta(Asta asta, List<Integer> articoliIds) {
         String sqlAsta = "INSERT INTO aste (prezzo_iniziale, rialzo_minimo, scadenza, venditore_id) VALUES (?, ?, ?, ?)";
         String sqlAstaArticoli = "INSERT INTO asta_articoli (asta_id, articolo_id) VALUES (?, ?)";
@@ -18,6 +22,7 @@ public class AstaDAO {
             conn.setAutoCommit(false);
 
             // Inserisci l'asta
+            int astaId;
             try (PreparedStatement stmtAsta = conn.prepareStatement(sqlAsta, Statement.RETURN_GENERATED_KEYS)) {
                 stmtAsta.setDouble(1, asta.getPrezzoIniziale());
                 stmtAsta.setInt(2, asta.getRialzoMinimo());
@@ -31,23 +36,27 @@ public class AstaDAO {
 
                 try (ResultSet generatedKeys = stmtAsta.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        int astaId = generatedKeys.getInt(1);
-
-                        // Inserisci gli articoli dell'asta
-                        try (PreparedStatement stmtArticoli = conn.prepareStatement(sqlAstaArticoli)) {
-                            for (Integer articoloId : articoliIds) {
-                                stmtArticoli.setInt(1, astaId);
-                                stmtArticoli.setInt(2, articoloId);
-                                stmtArticoli.addBatch();
-                            }
-                            stmtArticoli.executeBatch();
-                        }
-
-                        conn.commit();
-                        return true;
+                        astaId = generatedKeys.getInt(1);
+                    } else {
+                        throw new SQLException("Creazione asta fallita, nessun ID generato");
                     }
                 }
             }
+
+            // Inserisci gli articoli dell'asta
+            try (PreparedStatement stmtArticoli = conn.prepareStatement(sqlAstaArticoli)) {
+                for (Integer articoloId : articoliIds) {
+                    stmtArticoli.setInt(1, astaId);
+                    stmtArticoli.setInt(2, articoloId);
+                    stmtArticoli.addBatch();
+                }
+                stmtArticoli.executeBatch();
+            }
+
+            conn.commit();
+            System.out.println("✅ [DAO] Asta creata con successo: ID " + astaId);
+            return true;
+
         } catch (SQLException e) {
             if (conn != null) {
                 try {
@@ -56,7 +65,9 @@ public class AstaDAO {
                     ex.printStackTrace();
                 }
             }
+            System.err.println("❌ [DAO] Errore creazione asta: " + e.getMessage());
             e.printStackTrace();
+            return false;
         } finally {
             if (conn != null) {
                 try {
@@ -67,9 +78,11 @@ public class AstaDAO {
                 }
             }
         }
-        return false;
     }
 
+    /**
+     * Ottieni aste per venditore
+     */
     public List<Asta> getAsteByVenditore(int venditoreId, boolean chiuse) {
         String sql = "SELECT a.*, MAX(o.importo) as offerta_massima " +
                 "FROM aste a LEFT JOIN offerte o ON a.id = o.asta_id " +
@@ -91,12 +104,18 @@ public class AstaDAO {
                     aste.add(asta);
                 }
             }
+
         } catch (SQLException e) {
+            System.err.println("❌ [DAO] Errore get aste by venditore: " + e.getMessage());
             e.printStackTrace();
         }
+
         return aste;
     }
 
+    /**
+     * Cerca aste per parola chiave
+     */
     public List<Asta> cercaAste(String parolaChiave) {
         String sql = "SELECT DISTINCT a.*, MAX(o.importo) as offerta_massima " +
                 "FROM aste a " +
@@ -124,12 +143,18 @@ public class AstaDAO {
                     aste.add(asta);
                 }
             }
+
         } catch (SQLException e) {
+            System.err.println("❌ [DAO] Errore cerca aste: " + e.getMessage());
             e.printStackTrace();
         }
+
         return aste;
     }
 
+    /**
+     * Ottieni asta per ID
+     */
     public Asta getById(int id) {
         String sql = "SELECT a.*, MAX(o.importo) as offerta_massima " +
                 "FROM aste a LEFT JOIN offerte o ON a.id = o.asta_id " +
@@ -147,12 +172,18 @@ public class AstaDAO {
                     return asta;
                 }
             }
+
         } catch (SQLException e) {
+            System.err.println("❌ [DAO] Errore get asta by ID: " + e.getMessage());
             e.printStackTrace();
         }
+
         return null;
     }
 
+    /**
+     * Chiudi asta
+     */
     public boolean chiudiAsta(int astaId, int vincitoreId, Double prezzoFinale) {
         String sql = "UPDATE aste SET chiusa = TRUE, vincitore_id = ?, prezzo_finale = ? WHERE id = ?";
 
@@ -168,18 +199,23 @@ public class AstaDAO {
             if (prezzoFinale != null) {
                 stmt.setDouble(2, prezzoFinale);
             } else {
-                stmt.setNull(2, Types.DECIMAL);
+                stmt.setNull(2, Types.DOUBLE);
             }
 
             stmt.setInt(3, astaId);
 
             return stmt.executeUpdate() > 0;
+
         } catch (SQLException e) {
+            System.err.println("❌ [DAO] Errore chiusura asta: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
+    /**
+     * Ottieni aste vinte da un utente
+     */
     public List<Asta> getAsteVinte(int utenteId) {
         String sql = "SELECT a.*, MAX(o.importo) as offerta_massima " +
                 "FROM aste a LEFT JOIN offerte o ON a.id = o.asta_id " +
@@ -200,12 +236,18 @@ public class AstaDAO {
                     aste.add(asta);
                 }
             }
+
         } catch (SQLException e) {
+            System.err.println("❌ [DAO] Errore get aste vinte: " + e.getMessage());
             e.printStackTrace();
         }
+
         return aste;
     }
 
+    /**
+     * Ottieni articoli per un'asta
+     */
     private List<Articolo> getArticoliByAsta(int astaId) {
         String sql = "SELECT a.* FROM articoli a " +
                 "JOIN asta_articoli aa ON a.id = aa.articolo_id " +
@@ -232,13 +274,19 @@ public class AstaDAO {
                     articoli.add(articolo);
                 }
             }
+
         } catch (SQLException e) {
+            System.err.println("❌ [DAO] Errore get articoli by asta: " + e.getMessage());
             e.printStackTrace();
         }
+
         return articoli;
     }
 
-	private Asta mapResultSetToAsta(ResultSet rs) throws SQLException {
+    /**
+     * Mappa ResultSet a Asta
+     */
+    private Asta mapResultSetToAsta(ResultSet rs) throws SQLException {
         Asta asta = new Asta();
         asta.setId(rs.getInt("id"));
         asta.setPrezzoIniziale(rs.getDouble("prezzo_iniziale"));
@@ -247,22 +295,24 @@ public class AstaDAO {
         asta.setChiusa(rs.getBoolean("chiusa"));
         asta.setVenditoreId(rs.getInt("venditore_id"));
 
+        // Gestione vincitore (può essere null)
         int vincitoreId = rs.getInt("vincitore_id");
         if (!rs.wasNull()) {
             asta.setVincitoreId(vincitoreId);
         }
 
-        Double prezzoFinale = rs.getDouble("prezzo_finale");
-        if (prezzoFinale != null) {
+        // Gestione prezzo finale (può essere null)
+        double prezzoFinale = rs.getDouble("prezzo_finale");
+        if (!rs.wasNull()) {
             asta.setPrezzoFinale(prezzoFinale);
         }
 
-        Double offertaMassima = rs.getDouble("offerta_massima");
-        if (offertaMassima != null) {
+        // Gestione offerta massima (può essere null)
+        double offertaMassima = rs.getDouble("offerta_massima");
+        if (!rs.wasNull()) {
             asta.setOffertaMassima(offertaMassima);
-        } else {
-            asta.setOffertaMassima(asta.getPrezzoIniziale());
         }
+        // Se null, getOffertaMassima() ritornerà automaticamente il prezzo iniziale
 
         return asta;
     }

@@ -2,12 +2,11 @@
 <%@ page import="it.polimi.model.*" %>
 <%@ page import="it.polimi.util.DateUtil" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.math.BigDecimal" %>
 <%
   Utente utente = (Utente) request.getAttribute("utente");
   Asta asta = (Asta) request.getAttribute("asta");
   List<Offerta> offerte = (List<Offerta>) request.getAttribute("offerte");
-  BigDecimal minimaRichiesta = (BigDecimal) request.getAttribute("minimaRichiesta");
+  Double minimaRichiesta = (Double) request.getAttribute("minimaRichiesta");  // ← CAMBIATO DA BigDecimal a Double!
   String messaggio = (String) request.getAttribute("messaggio");
 %>
 <!DOCTYPE html>
@@ -19,7 +18,15 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<%@ include file="common/header.jsp" %>
+<div class="header">
+  <h1>💰 Fai Offerta</h1>
+  <div class="nav-links">
+    <a href="home">🏠 Home</a>
+    <a href="vendo">📦 Vendo</a>
+    <a href="acquisto">🛒 Acquisto</a>
+    <a href="login.html">🚪 Logout</a>
+  </div>
+</div>
 
 <div class="container">
   <div class="user-info">
@@ -49,7 +56,7 @@
       </div>
       <% } %>
       <p style="font-size: 18px; font-weight: bold; color: #27ae60;">
-        💰 Prezzo base: €<%= art.getPrezzo() %>
+        💰 Prezzo base: €<%= String.format("%.2f", art.getPrezzo()) %>
       </p>
     </div>
     <% } %>
@@ -64,14 +71,14 @@
       <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px;">
         <strong>💵 Offerta Attuale:</strong>
         <p style="font-size: 20px; font-weight: bold; color: #27ae60; margin: 5px 0;">
-          €<%= asta.getOffertaMassima() %>
+          €<%= String.format("%.2f", asta.getOffertaMassima()) %>
         </p>
       </div>
 
       <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px;">
         <strong>📈 Offerta Minima:</strong>
         <p style="font-size: 20px; font-weight: bold; color: #e74c3c; margin: 5px 0;">
-          €<%= minimaRichiesta %>
+          €<%= String.format("%.2f", minimaRichiesta) %>
         </p>
       </div>
 
@@ -91,10 +98,10 @@
       <div class="form-group">
         <label for="importo">💰 La tua Offerta (€):</label>
         <input type="number" step="0.01" id="importo" name="importo"
-               min="<%= minimaRichiesta %>"
-               placeholder="<%= minimaRichiesta %>"
+               min="<%= String.format("%.2f", minimaRichiesta) %>"
+               placeholder="<%= String.format("%.2f", minimaRichiesta) %>"
                style="font-size: 18px; padding: 15px;" required>
-        <small>L'offerta deve essere almeno €<%= minimaRichiesta %></small>
+        <small>L'offerta deve essere almeno €<%= String.format("%.2f", minimaRichiesta) %></small>
       </div>
       <button type="submit" class="btn btn-success"
               style="font-size: 18px; padding: 15px 30px;"
@@ -131,7 +138,7 @@
         </td>
         <td>
                         <span style="<% if (i == 0) { %>color: #27ae60; font-size: 18px;<% } %>">
-                            €<%= offerta.getImporto() %>
+                            €<%= String.format("%.2f", offerta.getImporto()) %>
                         </span>
         </td>
         <td><%= DateUtil.formatDateTime(offerta.getDataOfferta()) %></td>
@@ -159,6 +166,9 @@
   </div>
 </div>
 
-<%@ include file="common/footer.jsp" %>
+<div style="text-align: center; padding: 20px; margin-top: 40px; color: rgba(255,255,255,0.8);">
+  <p>© 2025 Aste Online - Politecnico di Milano</p>
+  <p><small>🚀 Powered by Jakarta EE 9+ & Modern Web Technologies</small></p>
+</div>
 </body>
 </html>

@@ -68,10 +68,7 @@ public class ChiudiAstaServlet extends HttpServlet {
                 for (int i = 0; i < asta.getArticoli().size(); i++) {
                     articoliIds.add(asta.getArticoli().get(i).getId());
                 }
-                for(Integer articoliId : articoliIds){
-                    articoloDAO.markAsVenduto(articoliId);
-                }
-
+                articoloDAO.marcaVenduti(articoliIds);
                 System.out.println("📦 [Jakarta] Marcati " + articoliIds.size() + " articoli come venduti");
             } else {
                 System.out.println("📭 [Jakarta] Nessuna offerta ricevuta per l'asta");

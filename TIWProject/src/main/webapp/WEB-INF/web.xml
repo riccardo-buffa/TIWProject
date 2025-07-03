@@ -21,6 +21,16 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+    <!-- Servlet di Registrazione -->
+    <servlet>
+        <servlet-name>RegistrazioneServlet</servlet-name>
+        <servlet-class>it.polimi.servlet.RegistrazioneServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegistrazioneServlet</servlet-name>
+        <url-pattern>/registrazione</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>HomeServlet</servlet-name>
         <servlet-class>it.polimi.servlet.HomeServlet</servlet-class>
@@ -93,7 +103,6 @@
         <url-pattern>/chiudi-asta</url-pattern>
     </servlet-mapping>
 
-    <!-- Session timeout (30 minuti) -->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>

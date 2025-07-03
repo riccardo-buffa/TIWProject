@@ -42,7 +42,7 @@ public class CreaArticoloServlet extends HttpServlet {
 
             Articolo articolo = new Articolo(codice, nome, descrizione, immagine, prezzo, utente.getId());
 
-            if (articoloDAO.createArticolo(articolo)) {
+            if (articoloDAO.creaArticolo(articolo)) {
                 System.out.println("✅ [Jakarta] Articolo creato con successo: " + codice);
                 response.sendRedirect("vendo");
             } else {

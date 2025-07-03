@@ -5,15 +5,15 @@ import java.util.List;
 
 public class Asta {
     private int id;
-    private double prezzoIniziale;
+    private double prezzoIniziale;      // primitivo double
     private int rialzoMinimo;
     private LocalDateTime scadenza;
     private boolean chiusa;
     private int venditoreId;
-    private Integer vincitoreId;
-    private double prezzoFinale;
+    private Integer vincitoreId;        // wrapper Integer (può essere null)
+    private Double prezzoFinale;        // wrapper Double (può essere null)
     private List<Articolo> articoli;
-    private double offertaMassima;
+    private Double offertaMassima;      // wrapper Double (può essere null)
 
     // Costruttori
     public Asta() {}
@@ -24,6 +24,7 @@ public class Asta {
         this.scadenza = scadenza;
         this.venditoreId = venditoreId;
         this.chiusa = false;
+        this.offertaMassima = null;  // Inizialmente null
     }
 
     // Getter e Setter
@@ -48,16 +49,44 @@ public class Asta {
     public Integer getVincitoreId() { return vincitoreId; }
     public void setVincitoreId(Integer vincitoreId) { this.vincitoreId = vincitoreId; }
 
-    public double getPrezzoFinale() { return prezzoFinale; }
-    public void setPrezzoFinale(double prezzoFinale) { this.prezzoFinale = prezzoFinale; }
+    public Double getPrezzoFinale() { return prezzoFinale; }
+    public void setPrezzoFinale(Double prezzoFinale) { this.prezzoFinale = prezzoFinale; }
 
     public List<Articolo> getArticoli() { return articoli; }
     public void setArticoli(List<Articolo> articoli) { this.articoli = articoli; }
 
-    public double getOffertaMassima() { return offertaMassima; }
-    public void setOffertaMassima(double offertaMassima) { this.offertaMassima = offertaMassima; }
+    // METODO CORRETTO per getOffertaMassima
+    public double getOffertaMassima() {
+        // Se offertaMassima è null, ritorna il prezzo iniziale
+        return offertaMassima != null ? offertaMassima : prezzoIniziale;
+    }
+
+    public void setOffertaMassima(Double offertaMassima) {
+        this.offertaMassima = offertaMassima;
+    }
+
+    // Metodo helper per sapere se ci sono offerte
+    public boolean hasOfferte() {
+        return offertaMassima != null;
+    }
+
+    // Metodo per ottenere il prezzo attuale (massimo tra offerte e prezzo iniziale)
+    public double getPrezzoAttuale() {
+        return getOffertaMassima();  // Usa il metodo già corretto
+    }
 
     public boolean isScaduta() {
         return LocalDateTime.now().isAfter(scadenza);
+    }
+
+    @Override
+    public String toString() {
+        return "Asta{" +
+                "id=" + id +
+                ", prezzoIniziale=" + prezzoIniziale +
+                ", offertaMassima=" + offertaMassima +
+                ", scadenza=" + scadenza +
+                ", chiusa=" + chiusa +
+                '}';
     }
 }
