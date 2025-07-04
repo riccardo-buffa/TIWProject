@@ -38,8 +38,14 @@
                 </h4>
                 <p style="margin-bottom: 10px;"><%= art.getDescrizione() %></p>
                 <% if (art.getImmagine() != null && !art.getImmagine().isEmpty()) { %>
-                <img src="<%= art.getImmagine() %>" alt="<%= art.getNome() %>"
-                     style="max-width: 200px; height: auto; border-radius: 5px; margin-bottom: 10px;">
+                <% if (art.getImmagine() != null && !art.getImmagine().isEmpty()) { %>
+                <img src="uploads/images/<%= art.getImmagine() %>" alt="<%= art.getNome() %>"
+                     style="max-width: 200px; height: auto; border-radius: 5px;">
+                <% } else { %>
+                <div style="width: 200px; height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+                    📷 Nessuna immagine
+                </div>
+                <% } %>
                 <% } %>
                 <p><strong>💰 Prezzo base: €<%= art.getPrezzo() %></strong></p>
             </div>

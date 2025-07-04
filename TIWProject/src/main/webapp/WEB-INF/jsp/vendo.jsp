@@ -35,28 +35,29 @@
   <!-- Form per creare nuovo articolo -->
   <div class="form-container">
     <h2>🆕 Crea Nuovo Articolo</h2>
-    <form method="post" action="crea-articolo">
+    <form method="post" action="crea-articolo" enctype="multipart/form-data">
       <div class="form-group">
-        <label for="codice">Codice:</label>
+        <label for="codice">📋 Codice:</label>
         <input type="text" id="codice" name="codice" placeholder="Es. ART001" required>
       </div>
       <div class="form-group">
-        <label for="nome">Nome:</label>
+        <label for="nome">🏷️ Nome:</label>
         <input type="text" id="nome" name="nome" placeholder="Es. iPhone 14 Pro" required>
       </div>
       <div class="form-group">
-        <label for="descrizione">Descrizione:</label>
+        <label for="descrizione">📝 Descrizione:</label>
         <textarea id="descrizione" name="descrizione" rows="3" placeholder="Descrizione dettagliata dell'articolo..." required></textarea>
       </div>
       <div class="form-group">
-        <label for="immagine">URL Immagine:</label>
-        <input type="url" id="immagine" name="immagine" placeholder="https://..." required>
+        <label for="immagine">📷 Immagine:</label>
+        <input type="file" id="immagine" name="immagine" accept=".jpg,.jpeg,.png,.gif">
+        <small style="color: #666;">Formati supportati: JPG, PNG, GIF (max 10MB) - Opzionale</small>
       </div>
       <div class="form-group">
-        <label for="prezzo">Prezzo (€):</label>
+        <label for="prezzo">💰 Prezzo (€):</label>
         <input type="number" step="0.01" id="prezzo" name="prezzo" min="0.01" placeholder="0.00" required>
       </div>
-      <button type="submit" class="btn btn-success">Crea Articolo</button>
+      <button type="submit" class="btn btn-success">🚀 Crea Articolo</button>
     </form>
   </div>
 

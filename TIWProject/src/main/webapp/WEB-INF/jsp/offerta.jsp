@@ -51,8 +51,14 @@
       <p style="margin-bottom: 15px; line-height: 1.6;"><%= art.getDescrizione() %></p>
       <% if (art.getImmagine() != null && !art.getImmagine().isEmpty()) { %>
       <div style="text-align: center; margin: 15px 0;">
-        <img src="<%= art.getImmagine() %>" alt="<%= art.getNome() %>"
-             style="max-width: 300px; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <% if (art.getImmagine() != null && !art.getImmagine().isEmpty()) { %>
+        <img src="uploads/images/<%= art.getImmagine() %>" alt="<%= art.getNome() %>"
+             style="max-width: 200px; height: auto; border-radius: 5px;">
+        <% } else { %>
+        <div style="width: 200px; height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
+          📷 Nessuna immagine
+        </div>
+        <% } %>
       </div>
       <% } %>
       <p style="font-size: 18px; font-weight: bold; color: #27ae60;">
