@@ -45,25 +45,58 @@ public class DettaglioAstaServlet extends HttpServlet {
                 return;
             }
 
+            // Carica le offerte per l'asta
             List<Offerta> offerte = offertaDAO.getOfferteByAsta(astaId);
 
+            // Carica informazioni del venditore
+            Utente venditore = utenteDAO.getById(asta.getVenditoreId());
+
+            // Carica informazioni del vincitore se presente
             Utente vincitore = null;
             if (asta.getVincitoreId() != null) {
                 vincitore = utenteDAO.getById(asta.getVincitoreId());
+                System.out.println("🏆 [Jakarta] Vincitore trovato: " + vincitore.getNomeCompleto() +
+                        " con prezzo finale: €" + asta.getPrezzoFinale());
             }
 
-            System.out.println("📊 [Jakarta] Asta caricata - Offerte: " + offerte.size() +
-                    (vincitore != null ? ", Vincitore: " + vincitore.getNomeCompleto() : ""));
+            // Calcola statistiche dell'asta
+            int numeroPartecipanti = 0;
+            if (offerte != null && !offerte.isEmpty()) {
+                numeroPartecipanti = (int) offerte.stream()
+                        .map(Offerta::getOfferenteId)
+                        .distinct()
+                        .count();
+            }
 
+            // Determina il tipo di accesso (venditore, partecipante, vincitore, osservatore)
+            boolean isVenditore = (asta.getVenditoreId() == utente.getId());
+            boolean isVincitore = (asta.getVincitoreId() != null && asta.getVincitoreId() == utente.getId());
+            boolean isPartecipante = offerte.stream()
+                    .anyMatch(o -> o.getOfferenteId() == utente.getId());
+
+            System.out.println("📊 [Jakarta] Asta caricata - ID: " + astaId +
+                    ", Offerte: " + offerte.size() +
+                    ", Partecipanti: " + numeroPartecipanti +
+                    ", Venditore: " + isVenditore +
+                    ", Vincitore: " + isVincitore +
+                    ", Partecipante: " + isPartecipante +
+                    (vincitore != null ? ", Aggiudicatario: " + vincitore.getNomeCompleto() : ""));
+
+            // Imposta attributi per la JSP
             request.setAttribute("utente", utente);
             request.setAttribute("asta", asta);
             request.setAttribute("offerte", offerte);
+            request.setAttribute("venditore", venditore);
             request.setAttribute("vincitore", vincitore);
+            request.setAttribute("numeroPartecipanti", numeroPartecipanti);
+            request.setAttribute("isVenditore", isVenditore);
+            request.setAttribute("isVincitore", isVincitore);
+            request.setAttribute("isPartecipante", isPartecipante);
 
             request.getRequestDispatcher("/WEB-INF/jsp/dettaglio-asta.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            System.err.println("❌ [Jakarta] ID asta non valido");
+            System.err.println("❌ [Jakarta] ID asta non valido: " + request.getParameter("id"));
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID asta non valido");
         } catch (Exception e) {
             System.err.println("❌ [Jakarta] Errore caricamento dettaglio asta: " + e.getMessage());

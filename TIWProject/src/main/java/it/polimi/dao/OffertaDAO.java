@@ -72,8 +72,13 @@ public class OffertaDAO {
     /**
      * Ottieni l'offerta massima per un'asta
      */
+    /**
+     * Ottieni l'offerta massima per un'asta con debug completo
+     */
     public Double getOffertaMassima(int astaId) {
-        String sql = "SELECT MAX(importo) as max_offerta FROM offerte WHERE asta_id = ?";
+        String sql = "SELECT MAX(importo) as max_offerta, COUNT(*) as num_offerte FROM offerte WHERE asta_id = ?";
+
+        System.out.println("🔍 [DAO] Ricerca offerta massima per asta " + astaId);
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -83,19 +88,28 @@ public class OffertaDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     double maxOfferta = rs.getDouble("max_offerta");
-                    if (!rs.wasNull()) {  // Controlla se non è NULL
-                        System.out.println("✅ [DAO] Offerta massima per asta " + astaId + ": €" + maxOfferta);
+                    int numOfferte = rs.getInt("num_offerte");
+                    boolean isNull = rs.wasNull();
+
+                    System.out.println("📊 [DAO] Asta " + astaId + " - Offerte totali: " + numOfferte +
+                            ", Massima: " + (isNull ? "NULL" : "€" + maxOfferta));
+
+                    if (!isNull && numOfferte > 0) {
+                        System.out.println("✅ [DAO] Offerta massima trovata: €" + maxOfferta);
                         return maxOfferta;
+                    } else {
+                        System.out.println("📭 [DAO] Nessuna offerta valida trovata per asta " + astaId);
+                        return null;
                     }
                 }
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ [DAO] Errore get offerta massima: " + e.getMessage());
+            System.err.println("❌ [DAO] Errore get offerta massima per asta " + astaId + ": " + e.getMessage());
             e.printStackTrace();
         }
 
-        System.out.println("ℹ️ [DAO] Nessuna offerta trovata per asta " + astaId);
+        System.out.println("❌ [DAO] Nessun risultato per asta " + astaId);
         return null;
     }
 
@@ -104,10 +118,12 @@ public class OffertaDAO {
      * In caso di parità, vince chi ha offerto per primo
      */
     public Integer getVincitore(int astaId) {
-        String sql = "SELECT offerente_id FROM offerte " +
+        String sql = "SELECT offerente_id, importo, data_offerta FROM offerte " +
                 "WHERE asta_id = ? " +
                 "ORDER BY importo DESC, data_offerta ASC " +  // Prima il più alto, poi il più vecchio
                 "LIMIT 1";
+
+        System.out.println("🔍 [DAO] Ricerca vincitore per asta " + astaId);
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -117,17 +133,24 @@ public class OffertaDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int vincitoreId = rs.getInt("offerente_id");
-                    System.out.println("✅ [DAO] Vincitore asta " + astaId + ": utente ID " + vincitoreId);
+                    double importo = rs.getDouble("importo");
+                    java.sql.Timestamp dataOfferta = rs.getTimestamp("data_offerta");
+
+                    System.out.println("🏆 [DAO] Vincitore trovato per asta " + astaId +
+                            ": utente ID " + vincitoreId +
+                            " con offerta €" + importo +
+                            " del " + dataOfferta);
                     return vincitoreId;
+                } else {
+                    System.out.println("📭 [DAO] Nessuna offerta trovata per asta " + astaId);
                 }
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ [DAO] Errore get vincitore: " + e.getMessage());
+            System.err.println("❌ [DAO] Errore get vincitore per asta " + astaId + ": " + e.getMessage());
             e.printStackTrace();
         }
 
-        System.out.println("ℹ️ [DAO] Nessun vincitore per asta " + astaId);
         return null;
     }
 

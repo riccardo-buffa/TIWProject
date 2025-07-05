@@ -151,7 +151,7 @@
   <!-- Lista aste aperte -->
   <% if (asteAperte != null && !asteAperte.isEmpty()) { %>
   <div class="table-container">
-    <h3>🟢 Le Mie Aste Aperte</h3>
+    <h3>Le Mie Aste</h3>
     <table>
       <tr>
         <th>Articoli</th>
@@ -190,43 +190,132 @@
   <!-- Lista aste chiuse -->
   <% if (asteChiuse != null && !asteChiuse.isEmpty()) { %>
   <div class="table-container">
-    <h3>🔴 Le Mie Aste Chiuse</h3>
+    <h3>🔴 Le Mie Aste Chiuse (<%= asteChiuse.size() %>)</h3>
     <table>
       <tr>
-        <th>Articoli</th>
-        <th>Prezzo Finale</th>
-        <th>Vincitore</th>
-        <th>Data Chiusura</th>
-        <th>Azioni</th>
+        <th>📦 Articoli</th>
+        <th>💰 Prezzo Iniziale</th>
+        <th>💸 Prezzo Finale</th>
+        <th>🏆 Stato</th>
+        <th>📅 Data Chiusura</th>
+        <th>⚙️ Azioni</th>
       </tr>
       <% for (Asta asta : asteChiuse) { %>
-      <tr>
+      <tr style="<%= asta.getVincitoreId() != null ? "background-color: #f0f8ff;" : "background-color: #fff5f5;" %>">
+        <!-- Articoli -->
         <td>
           <% for (Articolo art : asta.getArticoli()) { %>
-          <strong><%= art.getCodice() %></strong> - <%= art.getNome() %><br>
+          <div style="margin-bottom: 8px;">
+            <strong><%= art.getCodice() %></strong><br>
+            <span style="font-size: 14px;"><%= art.getNome() %></span>
+          </div>
           <% } %>
         </td>
+
+        <!-- Prezzo Iniziale -->
+        <td>
+          <strong style="color: #3498db;">€<%= String.format("%.2f", asta.getPrezzoIniziale()) %></strong><br>
+          <small style="color: #666;">Rialzo: €<%= asta.getRialzoMinimo() %></small>
+        </td>
+
+        <!-- Prezzo Finale -->
         <td>
           <% if (asta.getPrezzoFinale() != null) { %>
-          <strong style="color: #27ae60;">€<%= String.format("%.2f", asta.getPrezzoFinale()) %></strong>
+          <strong style="color: #27ae60; font-size: 16px;">€<%= String.format("%.2f", asta.getPrezzoFinale()) %></strong><br>
+          <%
+            double guadagno = asta.getPrezzoFinale() - asta.getPrezzoIniziale();
+            String guadagnoColor = guadagno >= 0 ? "#27ae60" : "#e74c3c";
+          %>
+          <small style="color: <%= guadagnoColor %>;">
+            <%= guadagno >= 0 ? "+" : "" %>€<%= String.format("%.2f", guadagno) %>
+          </small>
           <% } else { %>
-          <span style="color: #888;">Nessuna offerta</span>
+          <span style="color: #e74c3c; font-weight: bold;">Nessuna offerta</span>
           <% } %>
         </td>
+
+        <!-- Stato -->
         <td>
           <% if (asta.getVincitoreId() != null) { %>
-          <span class="status-open">✅ Aggiudicata</span>
+          <div style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 8px 12px; border-radius: 15px; text-align: center;">
+            <strong>🏆 VENDUTO</strong>
+          </div>
           <% } else { %>
-          <span class="status-closed">❌ Nessun vincitore</span>
+          <div style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 8px 12px; border-radius: 15px; text-align: center;">
+            <strong>❌ NON VENDUTO</strong>
+          </div>
           <% } %>
         </td>
-        <td><%= DateUtil.formatDateTime(asta.getScadenza()) %></td>
+
+        <!-- Data Chiusura -->
+        <td>
+          <strong><%= DateUtil.formatDateTime(asta.getScadenza()) %></strong><br>
+          <%
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            java.time.LocalDateTime scadenza = asta.getScadenza();
+            long giorniPassati = java.time.temporal.ChronoUnit.DAYS.between(scadenza, now);
+          %>
+          <small style="color: #666;">
+            <%= giorniPassati == 0 ? "Oggi" : giorniPassati + (giorniPassati == 1 ? " giorno fa" : " giorni fa") %>
+          </small>
+        </td>
+
+        <!-- Azioni -->
         <td>
           <a href="dettaglio-asta?id=<%= asta.getId() %>" class="link-button">📋 Dettagli</a>
         </td>
       </tr>
       <% } %>
     </table>
+
+    <!-- Statistiche riassuntive aste chiuse -->
+    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+      <%
+        int asteVendute = 0;
+        int asteNonVendute = 0;
+        double fatturato = 0.0;
+        double investimento = 0.0;
+
+        for (Asta asta : asteChiuse) {
+          if (asta.getVincitoreId() != null) {
+            asteVendute++;
+            fatturato += asta.getPrezzoFinale();
+          } else {
+            asteNonVendute++;
+          }
+          investimento += asta.getPrezzoIniziale();
+        }
+
+        double percentualeSuccesso = asteChiuse.size() > 0 ? ((double)asteVendute / asteChiuse.size()) * 100 : 0;
+        double guadagnoTotale = fatturato - investimento;
+      %>
+
+      <div style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+        <h4 style="margin: 0; font-size: 16px;">🏆 Vendute</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;"><%= asteVendute %></p>
+        <small>su <%= asteChiuse.size() %> totali</small>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+        <h4 style="margin: 0; font-size: 16px;">💰 Fatturato</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;">€<%= String.format("%.2f", fatturato) %></p>
+        <small>incasso totale</small>
+      </div>
+
+      <div style="background: linear-gradient(135deg, <%= guadagnoTotale >= 0 ? "#f39c12, #e67e22" : "#e74c3c, #c0392b" %>); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+        <h4 style="margin: 0; font-size: 16px;"><%= guadagnoTotale >= 0 ? "📈" : "📉" %> Guadagno</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;">
+          <%= guadagnoTotale >= 0 ? "+" : "" %>€<%= String.format("%.2f", guadagnoTotale) %>
+        </p>
+        <small><%= guadagnoTotale >= 0 ? "profitto" : "perdita" %></small>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+        <h4 style="margin: 0; font-size: 16px;">📊 Successo</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;"><%= String.format("%.1f", percentualeSuccesso) %>%</p>
+        <small>tasso vendita</small>
+      </div>
+    </div>
   </div>
   <% } %>
 
