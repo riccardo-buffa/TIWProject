@@ -38,11 +38,75 @@ public class ArticoloDAO {
     }
 
     /**
-     * Ottieni articoli disponibili per un proprietario
+     * Verifica quali articoli sono già inseriti in aste attive
+     */
+    public List<Integer> getArticoliGiaInAsteAttive(List<Integer> articoliIds) {
+        if (articoliIds == null || articoliIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // Costruisci query con IN clause
+        StringBuilder sql = new StringBuilder(
+                "SELECT DISTINCT aa.articolo_id FROM asta_articoli aa " +
+                        "JOIN aste a ON aa.asta_id = a.id " +
+                        "WHERE a.chiusa = FALSE AND aa.articolo_id IN ("
+        );
+
+        for (int i = 0; i < articoliIds.size(); i++) {
+            sql.append("?");
+            if (i < articoliIds.size() - 1) sql.append(",");
+        }
+        sql.append(")");
+
+        List<Integer> articoliGiaInAsta = new ArrayList<>();
+
+        System.out.println("🔍 [DAO] Controllo articoli già in aste attive per: " + articoliIds);
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            // Popola parametri
+            for (int i = 0; i < articoliIds.size(); i++) {
+                stmt.setInt(i + 1, articoliIds.get(i));
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int articoloId = rs.getInt("articolo_id");
+                    articoliGiaInAsta.add(articoloId);
+                    System.out.println("⚠️ [DAO] Articolo " + articoloId + " già in un'asta attiva");
+                }
+            }
+
+            if (articoliGiaInAsta.isEmpty()) {
+                System.out.println("✅ [DAO] Nessun articolo in aste attive - OK per creare nuova asta");
+            } else {
+                System.out.println("❌ [DAO] Trovati " + articoliGiaInAsta.size() + " articoli già in aste attive");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ [DAO] Errore controllo articoli in aste attive: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return articoliGiaInAsta;
+    }
+
+    /**
+     * Ottieni articoli disponibili per un proprietario (NON in aste attive e NON venduti)
      */
     public List<Articolo> getArticoliDisponibili(int proprietarioId) {
-        String sql = "SELECT * FROM articoli WHERE proprietario_id = ? AND venduto = FALSE";
+        String sql = "SELECT a.* FROM articoli a " +
+                "WHERE a.proprietario_id = ? AND a.venduto = FALSE " +
+                "AND a.id NOT IN (" +
+                "    SELECT aa.articolo_id FROM asta_articoli aa " +
+                "    JOIN aste ast ON aa.asta_id = ast.id " +
+                "    WHERE ast.chiusa = FALSE" +
+                ")";
+
         List<Articolo> articoli = new ArrayList<>();
+
+        System.out.println("🔍 [DAO] Caricamento articoli disponibili per proprietario " + proprietarioId);
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -55,6 +119,8 @@ public class ArticoloDAO {
                     articoli.add(articolo);
                 }
             }
+
+            System.out.println("✅ [DAO] Trovati " + articoli.size() + " articoli disponibili per creare aste");
 
         } catch (SQLException e) {
             System.err.println("❌ [DAO] Errore get articoli disponibili: " + e.getMessage());
