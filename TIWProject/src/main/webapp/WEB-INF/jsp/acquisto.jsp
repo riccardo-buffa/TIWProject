@@ -2,6 +2,7 @@
 <%@ page import="it.polimi.model.*" %>
 <%@ page import="it.polimi.util.DateUtil" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%
   Utente utente = (Utente) request.getAttribute("utente");
   String parolaChiave = (String) request.getAttribute("parolaChiave");
@@ -68,9 +69,9 @@
           <br><small>Rialzo min: €<%= asta.getRialzoMinimo() %></small>
         </td>
         <td>
-                            <span class="<%= asta.isScaduta() ? "status-closed" : "status-open" %>">
-                                <%= DateUtil.getTempoRimanente(asta.getScadenza()) %>
-                            </span>
+          <span class="<%= asta.isScaduta() ? "status-closed" : "status-open" %>">
+            <%= DateUtil.getTempoRimanente(asta.getScadenza()) %>
+          </span>
         </td>
         <td>
           <% if (asta.isChiusa()) { %>
@@ -103,34 +104,113 @@
   <% } %>
 
   <!-- Aste vinte -->
-  <% if (asteVinte != null && !asteVinte.isEmpty()) { %>
+  <%
+    Map<Integer, Utente> venditoriMap = (Map<Integer, Utente>) request.getAttribute("venditoriMap");
+    if (asteVinte != null && !asteVinte.isEmpty()) {
+  %>
   <div class="table-container">
-    <h3>🏆 Le Mie Aste Vinte</h3>
+    <h3>🏆 Le Mie Aste Vinte (<%= asteVinte.size() %>)</h3>
     <table>
       <tr>
-        <th>Articoli</th>
-        <th>Prezzo Finale</th>
-        <th>Data Chiusura</th>
-        <th>Indirizzo Spedizione</th>
+        <th>📦 Articoli</th>
+        <th>💰 Prezzo Pagato</th>
+        <th>👤 Venditore</th>
+        <th>📅 Data Aggiudicazione</th>
+        <th>📍 Indirizzo Spedizione</th>
+        <th>⚙️ Azioni</th>
       </tr>
-      <% for (Asta asta : asteVinte) { %>
-      <tr style="background-color: #f0f8ff;">
+      <% for (Asta asta : asteVinte) {
+        Utente venditore = venditoriMap != null ? venditoriMap.get(asta.getVenditoreId()) : null;
+      %>
+      <tr style="background-color: #f0f8ff; border-left: 4px solid #27ae60;">
+        <!-- Articoli -->
         <td>
           <% for (Articolo art : asta.getArticoli()) { %>
           <div style="margin-bottom: 8px;">
-            <strong><%= art.getCodice() %> - <%= art.getNome() %></strong><br>
-            <small><%= art.getDescrizione() %></small>
+            <strong style="color: #2c3e50;"><%= art.getCodice() %> - <%= art.getNome() %></strong><br>
+            <small style="color: #666; line-height: 1.4;">
+              <%= art.getDescrizione().length() > 60 ?
+                      art.getDescrizione().substring(0, 60) + "..." :
+                      art.getDescrizione() %>
+            </small><br>
+            <small style="color: #888;">Valore base: €<%= String.format("%.2f", art.getPrezzo()) %></small>
           </div>
           <% } %>
         </td>
+
+        <!-- Prezzo Pagato -->
         <td>
-          <strong style="color: #27ae60;">€<%= asta.getPrezzoFinale() %></strong>
+          <div style="text-align: center;">
+            <span style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 8px 12px; border-radius: 15px; font-weight: bold; display: inline-block;">
+              🏆 €<%= String.format("%.2f", asta.getPrezzoFinale()) %>
+            </span>
+          </div>
         </td>
+
+        <!-- Venditore -->
         <td>
-          <%= DateUtil.formatDateTime(asta.getScadenza()) %>
+          <% if (venditore != null) { %>
+          <div style="background-color: #f8f9fa; padding: 10px; border-radius: 8px;">
+            <strong style="color: #2c3e50;"><%= venditore.getNomeCompleto() %></strong><br>
+            <small style="color: #666;">@<%= venditore.getUsername() %></small><br>
+            <small style="color: #888; margin-top: 5px; display: block;">
+              📍 <%= venditore.getIndirizzo() %>
+            </small>
+          </div>
+          <% } else { %>
+          <span style="color: #888;">Venditore non disponibile</span>
+          <% } %>
         </td>
+
+        <!-- Data Aggiudicazione -->
         <td>
-          <%= utente.getIndirizzo() %>
+          <strong style="color: #2c3e50;"><%= DateUtil.formatDateTime(asta.getScadenza()) %></strong><br>
+          <%
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            java.time.LocalDateTime scadenza = asta.getScadenza();
+            long giorniPassati = java.time.temporal.ChronoUnit.DAYS.between(scadenza, now);
+          %>
+          <small style="color: #666;">
+            <%= giorniPassati == 0 ? "Oggi" : giorniPassati + (giorniPassati == 1 ? " giorno fa" : " giorni fa") %>
+          </small>
+        </td>
+
+        <!-- Indirizzo Spedizione -->
+        <td>
+          <div style="background: linear-gradient(135deg, #e8f5e8, #d4edda); padding: 10px; border-radius: 8px; border-left: 4px solid #28a745;">
+            <strong style="color: #155724;">📍 Il mio indirizzo:</strong><br>
+            <span style="font-size: 14px; line-height: 1.4; color: #155724;">
+              <%= utente.getIndirizzo() %>
+            </span>
+          </div>
+          <div style="margin-top: 8px; padding: 8px; background-color: #fff3cd; border-radius: 5px;">
+            <small style="color: #856404;">
+              <strong>💡 Promemoria:</strong> Il venditore dovrebbe aver già spedito gli articoli a questo indirizzo.
+            </small>
+          </div>
+        </td>
+
+        <!-- Azioni -->
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Link dettagli -->
+            <a href="dettaglio-asta?id=<%= asta.getId() %>"
+               class="link-button"
+               style="font-size: 12px; padding: 8px; text-align: center; background: #3498db; color: white; border-radius: 5px; text-decoration: none;">
+              📋 Dettagli Completi
+            </a>
+
+            <!-- Riepilogo spesa -->
+            <div style="background-color: #d1ecf1; padding: 8px; border-radius: 5px; text-align: center; font-size: 11px;">
+              <strong style="color: #0c5460;">💳 Pagato</strong><br>
+              <span style="color: #0c5460; font-weight: bold;">€<%= String.format("%.2f", asta.getPrezzoFinale()) %></span>
+            </div>
+
+            <!-- ID Asta -->
+            <div style="font-size: 10px; color: #666; text-align: center;">
+              <em>Asta #<%= asta.getId() %></em>
+            </div>
+          </div>
         </td>
       </tr>
       <% } %>
@@ -145,6 +225,5 @@
   <% } %>
 </div>
 
-<%@ include file="common/footer.jsp" %>
 </body>
 </html>

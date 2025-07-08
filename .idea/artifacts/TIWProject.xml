@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="TIWProject">
+    <output-path>$PROJECT_DIR$/TIWProject/target</output-path>
+    <root id="archive" name="TIWProject.war" />
+  </artifact>
+</component>

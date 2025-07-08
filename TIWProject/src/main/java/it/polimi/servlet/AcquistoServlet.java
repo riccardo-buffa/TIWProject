@@ -1,7 +1,7 @@
-
 package it.polimi.servlet;
 
 import it.polimi.dao.AstaDAO;
+import it.polimi.dao.UtenteDAO;
 import it.polimi.model.Asta;
 import it.polimi.model.Utente;
 
@@ -12,11 +12,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "AcquistoServlet", urlPatterns = {"/acquisto"})
 public class AcquistoServlet extends HttpServlet {
     private AstaDAO astaDAO = new AstaDAO();
+    private UtenteDAO utenteDAO = new UtenteDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -44,17 +47,39 @@ public class AcquistoServlet extends HttpServlet {
 
         try {
             List<Asta> aste = null;
-            List<Asta> asteVinte = astaDAO.getAsteVinte(utente.getId());
 
+            // Carica sempre le aste vinte dall'utente
+            List<Asta> asteVinte = astaDAO.getAsteVinte(utente.getId());
+            System.out.println("🏆 [Jakarta] Aste vinte caricate: " + asteVinte.size());
+
+            // Crea mappa dei venditori per le aste vinte
+            Map<Integer, Utente> venditoriMap = new HashMap<>();
+            for (Asta asta : asteVinte) {
+                if (!venditoriMap.containsKey(asta.getVenditoreId())) {
+                    Utente venditore = utenteDAO.getById(asta.getVenditoreId());
+                    if (venditore != null) {
+                        venditoriMap.put(asta.getVenditoreId(), venditore);
+                        System.out.println("👤 [Jakarta] Venditore caricato: " + venditore.getNomeCompleto() + " per asta " + asta.getId());
+                    }
+                }
+            }
+
+            // Gestione ricerca aste
             if (parolaChiave != null && !parolaChiave.trim().isEmpty()) {
                 aste = astaDAO.cercaAste(parolaChiave.trim());
                 System.out.println("📊 [Jakarta] Risultati ricerca: " + (aste != null ? aste.size() : 0) + " aste");
             }
 
+            // Imposta attributi per la JSP
             request.setAttribute("utente", utente);
             request.setAttribute("parolaChiave", parolaChiave);
             request.setAttribute("aste", aste);
             request.setAttribute("asteVinte", asteVinte);
+            request.setAttribute("venditoriMap", venditoriMap);
+
+            System.out.println("✅ [Jakarta] Dati caricati - Ricerca: " + (aste != null ? aste.size() : 0) +
+                    ", Aste vinte: " + asteVinte.size() +
+                    ", Venditori: " + venditoriMap.size());
 
             request.getRequestDispatcher("/WEB-INF/jsp/acquisto.jsp").forward(request, response);
 

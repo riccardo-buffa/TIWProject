@@ -1,4 +1,3 @@
-
 package it.polimi.servlet;
 
 import it.polimi.dao.ArticoloDAO;
@@ -52,11 +51,45 @@ public class CreaAstaServlet extends HttpServlet {
 
             System.out.println("🎯 [Jakarta] Creazione asta con " + articoliIds.size() + " articoli per utente: " + utente.getUsername());
 
-            // Calcola prezzo iniziale
+            // CONTROLLO: Verifica che gli articoli non siano già in altre aste attive
+            List<Integer> articoliGiaInAsta = articoloDAO.getArticoliGiaInAsteAttive(articoliIds);
+            if (!articoliGiaInAsta.isEmpty()) {
+                System.err.println("❌ [Jakarta] Articoli già in aste attive: " + articoliGiaInAsta);
+
+                // Trova i nomi degli articoli per il messaggio di errore
+                List<Articolo> articoliProblematici = articoloDAO.getArticoliByIds(articoliGiaInAsta);
+                StringBuilder nomiArticoli = new StringBuilder();
+                for (Articolo art : articoliProblematici) {
+                    if (nomiArticoli.length() > 0) nomiArticoli.append(", ");
+                    nomiArticoli.append(art.getCodice()).append(" - ").append(art.getNome());
+                }
+
+                String messaggioErrore = "❌ I seguenti articoli sono già inseriti in altre aste attive: " + nomiArticoli.toString() +
+                        ". Un articolo può essere inserito in una sola asta alla volta.";
+
+                request.setAttribute("errore", messaggioErrore);
+                request.setAttribute("articoliSelezionati", articoliIds);
+                request.getRequestDispatcher("/WEB-INF/jsp/crea-asta-error.jsp").forward(request, response);
+                return;
+            }
+
+            // Verifica che tutti gli articoli appartengano all'utente
             List<Articolo> articoli = articoloDAO.getArticoliByIds(articoliIds);
+            for (Articolo articolo : articoli) {
+                if (articolo.getProprietarioId() != utente.getId()) {
+                    System.err.println("❌ [Jakarta] Tentativo di inserire articolo non proprio: " + articolo.getCodice());
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Non puoi inserire articoli che non ti appartengono");
+                    return;
+                }
+                if (articolo.isVenduto()) {
+                    System.err.println("❌ [Jakarta] Tentativo di inserire articolo già venduto: " + articolo.getCodice());
+                    request.setAttribute("errore", "❌ L'articolo " + articolo.getCodice() + " è già stato venduto e non può essere inserito in un'asta.");
+                    request.getRequestDispatcher("/WEB-INF/jsp/crea-asta-error.jsp").forward(request, response);
+                    return;
+                }
+            }
 
-
-
+            // Calcola prezzo iniziale
             double prezzoIniziale = 0.0;
             for (Articolo articolo : articoli) {
                 prezzoIniziale += articolo.getPrezzo();

@@ -8,10 +8,12 @@
     <display-name>Aste Online</display-name>
 
     <welcome-file-list>
-        <welcome-file>login.html</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index-spa.html</welcome-file>
     </welcome-file-list>
 
-    <!-- Servlet Mappings -->
+    <!-- ===== SERVLET HTML PURO (esistenti) ===== -->
+    
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>it.polimi.servlet.LoginServlet</servlet-class>
@@ -21,7 +23,6 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
-    <!-- Servlet di Registrazione -->
     <servlet>
         <servlet-name>RegistrazioneServlet</servlet-name>
         <servlet-class>it.polimi.servlet.RegistrazioneServlet</servlet-class>
@@ -103,7 +104,82 @@
         <url-pattern>/chiudi-asta</url-pattern>
     </servlet-mapping>
 
+    <!-- ===== SERVLET API per versione JavaScript ===== -->
+
+    <!-- Login API -->
+    <servlet>
+        <servlet-name>LoginAPIServlet</servlet-name>
+        <servlet-class>it.polimi.servlet.api.LoginAPIServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginAPIServlet</servlet-name>
+        <url-pattern>/api/login</url-pattern>
+    </servlet-mapping>
+
+    <!-- Articoli API -->
+    <servlet>
+        <servlet-name>ArticoliAPIServlet</servlet-name>
+        <servlet-class>it.polimi.servlet.api.ArticoliAPIServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ArticoliAPIServlet</servlet-name>
+        <url-pattern>/api/articoli</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ArticoliAPIServlet</servlet-name>
+        <url-pattern>/api/articoli/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Aste API -->
+    <servlet>
+        <servlet-name>AsteAPIServlet</servlet-name>
+        <servlet-class>it.polimi.servlet.api.AsteAPIServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AsteAPIServlet</servlet-name>
+        <url-pattern>/api/aste</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AsteAPIServlet</servlet-name>
+        <url-pattern>/api/aste/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Offerte API -->
+    <servlet>
+        <servlet-name>OfferteAPIServlet</servlet-name>
+        <servlet-class>it.polimi.servlet.api.OfferteAPIServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OfferteAPIServlet</servlet-name>
+        <url-pattern>/api/offerte</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OfferteAPIServlet</servlet-name>
+        <url-pattern>/api/offerte/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- ===== CONFIGURAZIONI ===== -->
+
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+
+    <!-- Filtro per encoding UTF-8 -->
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ignore</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 </web-app>

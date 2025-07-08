@@ -10,6 +10,7 @@
   <title>Registrazione Completata - Aste Online</title>
   <link rel="stylesheet" href="css/style.css">
   <meta http-equiv="refresh" content="10;url=home">
+  <-- redirect automatico-->
 </head>
 <body>
 <div class="container">
@@ -52,12 +53,12 @@
 </div>
 
 <div>
-  <a href="home" class="btn-link">🏠 Vai alla Home</a>
-  <a href="vendo" class="btn-link">📦 Inizia a Vendere</a>
-  <a href="acquisto" class="btn-link">🛒 Cerca Aste</a>
+  <a href="home" class="btn-link"> Vai alla Home</a>
+  <a href="vendo" class="btn-link"> Inizia a Vendere</a>
+  <a href="acquisto" class="btn-link"> Cerca Aste</a>
 </div>
 
 <div class="countdown">
   <p>Verrai reindirizzato automaticamente alla home tra <span id="countdown">10</span> secondi...</p>
 </div>
-</div></html>
+</html>
