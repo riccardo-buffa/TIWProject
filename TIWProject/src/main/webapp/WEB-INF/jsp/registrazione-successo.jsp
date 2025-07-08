@@ -53,9 +53,9 @@
 </div>
 
 <div>
-  <a href="home" class="btn-link">🏠 Vai alla Home</a>
-  <a href="vendo" class="btn-link">📦 Inizia a Vendere</a>
-  <a href="acquisto" class="btn-link">🛒 Cerca Aste</a>
+  <a href="home" class="btn-link"> Vai alla Home</a>
+  <a href="vendo" class="btn-link"> Inizia a Vendere</a>
+  <a href="acquisto" class="btn-link"> Cerca Aste</a>
 </div>
 
 <div class="countdown">

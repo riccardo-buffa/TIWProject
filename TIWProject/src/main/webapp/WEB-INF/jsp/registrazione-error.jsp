@@ -17,7 +17,7 @@
 <body>
 <div class="container">
   <div class="login-container">
-    <h2>❌ Errore Registrazione</h2>
+    <h2> Errore Registrazione</h2>
 
     <div class="alert alert-error">
       <%= errore %>
@@ -25,7 +25,7 @@
 
     <form method="post" action="registrazione">
       <div class="form-group">
-        <label for="username">👤 Username:</label>
+        <label for="username"> Username:</label>
         <input type="text" id="username" name="username"
                minlength="3" maxlength="50" required
                value="<%= username != null ? username : "" %>"
@@ -33,14 +33,14 @@
       </div>
 
       <div class="form-group">
-        <label for="password">🔒 Password:</label>
+        <label for="password"> Password:</label>
         <input type="password" id="password" name="password"
                minlength="6" maxlength="100" required
                placeholder="Almeno 6 caratteri">
       </div>
 
       <div class="form-group">
-        <label for="confermaPassword">🔒 Conferma Password:</label>
+        <label for="confermaPassword"> Conferma Password:</label>
         <input type="password" id="confermaPassword" name="confermaPassword"
                minlength="6" maxlength="100" required
                placeholder="Ripeti la password">
@@ -48,7 +48,7 @@
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
         <div class="form-group">
-          <label for="nome">🏷️ Nome:</label>
+          <label for="nome"> Nome:</label>
           <input type="text" id="nome" name="nome"
                  maxlength="50" required
                  value="<%= nome != null ? nome : "" %>"
@@ -56,7 +56,7 @@
         </div>
 
         <div class="form-group">
-          <label for="cognome">🏷️ Cognome:</label>
+          <label for="cognome"> Cognome:</label>
           <input type="text" id="cognome" name="cognome"
                  maxlength="50" required
                  value="<%= cognome != null ? cognome : "" %>"
@@ -65,13 +65,13 @@
       </div>
 
       <div class="form-group">
-        <label for="indirizzo">📍 Indirizzo:</label>
+        <label for="indirizzo"> Indirizzo:</label>
         <textarea id="indirizzo" name="indirizzo"
                   maxlength="200" required
                   placeholder="Es. Via Roma 123, 20121 Milano (MI)"><%= indirizzo != null ? indirizzo : "" %></textarea>
       </div>
 
-      <button type="submit" class="btn">🚀 Riprova Registrazione</button>
+      <button type="submit" class="btn">Riprova Registrazione</button>
     </form>
 
     <div style="text-align: center; margin-top: 20px;">

@@ -13,19 +13,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vendo - Aste Online Jakarta</title>
+  <title>Vendo - Aste Online</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="header">
-  <h1>📦 Vendo - Aste Online</h1>
-  <div class="nav-links">
-    <a href="home">🏠 Home</a>
-    <a href="vendo">📦 Vendo</a>
-    <a href="acquisto">🛒 Acquisto</a>
-    <a href="login.html">🚪 Logout</a>
-  </div>
-</div>
+<%@ include file="common/header.jsp" %>
 
 <div class="container">
   <div class="user-info">
@@ -74,18 +66,12 @@
       <div class="form-group">
         <label>📦 Seleziona Articoli da Mettere all'Asta:</label>
         <div class="checkbox-list">
-          <%
-            double totalePrezzo = 0.0;
-            for (Articolo articolo : articoliDisponibili) {
-              totalePrezzo += articolo.getPrezzo();
-          %>
+          <% for (Articolo articolo : articoliDisponibili) { %>
           <div class="checkbox-item">
             <input type="checkbox"
                    id="art<%= articolo.getId() %>"
                    name="articoli"
-                   value="<%= articolo.getId() %>"
-                   data-prezzo="<%= articolo.getPrezzo() %>"
-                   onchange="calcolaPrezzoTotale()">
+                   value="<%= articolo.getId() %>">
             <label for="art<%= articolo.getId() %>">
               <strong><%= articolo.getCodice() %> - <%= articolo.getNome() %></strong>
               <br>💰 €<%= String.format("%.2f", articolo.getPrezzo()) %>
@@ -93,9 +79,6 @@
             </label>
           </div>
           <% } %>
-        </div>
-        <div id="prezzo-totale" style="margin-top: 15px; padding: 10px; background-color: #e8f5e8; border-radius: 5px; font-weight: bold;">
-          💰 Prezzo iniziale asta: €<span id="totale-valore">0.00</span>
         </div>
       </div>
 
@@ -120,22 +103,9 @@
         </div>
       </div>
 
-      <!-- Esempio e Aiuto -->
-      <div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-        <h4 style="color: #2c3e50; margin-bottom: 10px;">💡 Esempio:</h4>
-        <ul style="margin-left: 20px; color: #555;">
-          <li><strong>Articoli selezionati:</strong> iPhone (€899) + Cuffie (€99) = €998 prezzo iniziale</li>
-          <li><strong>Rialzo minimo:</strong> €25 → prossima offerta minima: €1023</li>
-          <li><strong>Scadenza:</strong> 15-07-2025 20:00 → asta chiude automaticamente</li>
-        </ul>
-      </div>
-
       <!-- Pulsante Crea Asta -->
       <div style="text-align: center; margin-top: 30px;">
-        <button type="submit"
-                class="btn btn-success"
-                style="font-size: 18px; padding: 15px 30px;"
-                onclick="return validaFormAsta()">
+        <button type="submit" class="btn btn-success" style="font-size: 18px; padding: 15px 30px;">
           🚀 Crea Asta
         </button>
       </div>
@@ -151,7 +121,7 @@
   <!-- Lista aste aperte -->
   <% if (asteAperte != null && !asteAperte.isEmpty()) { %>
   <div class="table-container">
-    <h3>Le Mie Aste</h3>
+    <h3>🟢 Le Mie Aste Aperte</h3>
     <table>
       <tr>
         <th>Articoli</th>
@@ -174,9 +144,9 @@
           </strong>
         </td>
         <td>
-                        <span class="<%= asta.isScaduta() ? "status-closed" : "status-open" %>">
-                            <%= DateUtil.getTempoRimanente(asta.getScadenza()) %>
-                        </span>
+          <span class="<%= asta.isScaduta() ? "status-closed" : "status-open" %>">
+            <%= DateUtil.getTempoRimanente(asta.getScadenza()) %>
+          </span>
         </td>
         <td>
           <a href="dettaglio-asta?id=<%= asta.getId() %>" class="link-button">📋 Dettagli</a>
@@ -267,55 +237,6 @@
       </tr>
       <% } %>
     </table>
-
-    <!-- Statistiche riassuntive aste chiuse -->
-    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-      <%
-        int asteVendute = 0;
-        int asteNonVendute = 0;
-        double fatturato = 0.0;
-        double investimento = 0.0;
-
-        for (Asta asta : asteChiuse) {
-          if (asta.getVincitoreId() != null) {
-            asteVendute++;
-            fatturato += asta.getPrezzoFinale();
-          } else {
-            asteNonVendute++;
-          }
-          investimento += asta.getPrezzoIniziale();
-        }
-
-        double percentualeSuccesso = asteChiuse.size() > 0 ? ((double)asteVendute / asteChiuse.size()) * 100 : 0;
-        double guadagnoTotale = fatturato - investimento;
-      %>
-
-      <div style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-        <h4 style="margin: 0; font-size: 16px;">🏆 Vendute</h4>
-        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;"><%= asteVendute %></p>
-        <small>su <%= asteChiuse.size() %> totali</small>
-      </div>
-
-      <div style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-        <h4 style="margin: 0; font-size: 16px;">💰 Fatturato</h4>
-        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;">€<%= String.format("%.2f", fatturato) %></p>
-        <small>incasso totale</small>
-      </div>
-
-      <div style="background: linear-gradient(135deg, <%= guadagnoTotale >= 0 ? "#f39c12, #e67e22" : "#e74c3c, #c0392b" %>); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-        <h4 style="margin: 0; font-size: 16px;"><%= guadagnoTotale >= 0 ? "📈" : "📉" %> Guadagno</h4>
-        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;">
-          <%= guadagnoTotale >= 0 ? "+" : "" %>€<%= String.format("%.2f", guadagnoTotale) %>
-        </p>
-        <small><%= guadagnoTotale >= 0 ? "profitto" : "perdita" %></small>
-      </div>
-
-      <div style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-        <h4 style="margin: 0; font-size: 16px;">📊 Successo</h4>
-        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;"><%= String.format("%.1f", percentualeSuccesso) %>%</p>
-        <small>tasso vendita</small>
-      </div>
-    </div>
   </div>
   <% } %>
 
@@ -327,54 +248,5 @@
   <% } %>
 </div>
 
-<script>
-  // Calcola prezzo totale degli articoli selezionati
-  function calcolaPrezzoTotale() {
-    let checkboxes = document.querySelectorAll('input[name="articoli"]:checked');
-    let totale = 0;
-
-    checkboxes.forEach(function(checkbox) {
-      totale += parseFloat(checkbox.getAttribute('data-prezzo'));
-    });
-
-    document.getElementById('totale-valore').textContent = totale.toFixed(2);
-  }
-
-  // Valida form prima dell'invio
-  function validaFormAsta() {
-    let checkboxes = document.querySelectorAll('input[name="articoli"]:checked');
-
-    if (checkboxes.length === 0) {
-      alert('⚠️ Devi selezionare almeno un articolo per creare l\'asta!');
-      return false;
-    }
-
-    let scadenza = document.getElementById('scadenza').value;
-    let regexData = /^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$/;
-
-    if (!regexData.test(scadenza)) {
-      alert('⚠️ Formato data non corretto!\nUsa: dd-MM-yyyy HH:mm\nEsempio: 15-07-2025 20:00');
-      return false;
-    }
-
-    return confirm('🎯 Confermi di voler creare questa asta?');
-  }
-
-  // Imposta data di esempio
-  window.onload = function() {
-    let oggi = new Date();
-    oggi.setDate(oggi.getDate() + 7); // +7 giorni
-    let giorno = String(oggi.getDate()).padStart(2, '0');
-    let mese = String(oggi.getMonth() + 1).padStart(2, '0');
-    let anno = oggi.getFullYear();
-
-    document.getElementById('scadenza').placeholder = giorno + '-' + mese + '-' + anno + ' 23:59';
-  };
-</script>
-
-<div style="text-align: center; padding: 20px; margin-top: 40px; color: rgba(255,255,255,0.8);">
-  <p>© 2025 Aste Online - Politecnico di Milano</p>
-  <p><small>🚀 Powered by Jakarta EE 9+ & Modern Web Technologies</small></p>
-</div>
 </body>
 </html>

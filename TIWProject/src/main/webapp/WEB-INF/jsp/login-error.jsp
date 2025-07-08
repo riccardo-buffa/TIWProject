@@ -15,35 +15,35 @@
 <body>
 <div class="container">
   <div class="login-container">
-    <h1>🔐 Aste Online</h1>
+    <h1>Aste Online</h1>
 
     <div class="alert alert-error">
-      ❌ <%= errore %>
+      <%= errore %>
     </div>
 
     <form method="post" action="login">
       <div class="form-group">
-        <label for="username">👤 Username:</label>
+        <label for="username">Username:</label>
         <input type="text" id="username" name="username"
                value="<%= username != null ? username : "" %>" required>
       </div>
 
       <div class="form-group">
-        <label for="password">🔒 Password:</label>
+        <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
       </div>
 
-      <button type="submit" class="btn" style="width: 100%;">🚀 Riprova Login</button>
+      <button type="submit" class="btn" style="width: 100%;">Riprova Login</button>
     </form>
 
     <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
-      <h4>👥 Account Demo:</h4>
+      <h4>Account Demo:</h4>
       <p><strong>Username:</strong> admin<br>
         <strong>Password:</strong> admin123</p>
       <p><strong>Username:</strong> utente1<br>
         <strong>Password:</strong> pass123</p>
       <p style="color: #e74c3c; font-size: 14px; margin-top: 10px;">
-        <strong>⚠️ Suggerimento:</strong> Controlla maiuscole/minuscole
+        <strong>Suggerimento:</strong> Controlla maiuscole/minuscole
       </p>
     </div>
   </div>

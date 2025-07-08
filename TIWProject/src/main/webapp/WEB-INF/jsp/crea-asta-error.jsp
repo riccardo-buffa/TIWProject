@@ -100,17 +100,5 @@
     </div>
 </div>
 
-<%@ include file="common/footer.jsp" %>
-
-<script>
-    // Auto-scroll verso il form di creazione articolo se richiesto
-    if (window.location.hash === '#crea-articolo') {
-        setTimeout(function() {
-            window.location.href = 'vendo';
-            // Il focus sarà automaticamente sul form di creazione articolo
-        }, 2000);
-    }
-</script>
-
 </body>
 </html>

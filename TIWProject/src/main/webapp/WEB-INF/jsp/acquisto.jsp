@@ -69,9 +69,9 @@
           <br><small>Rialzo min: €<%= asta.getRialzoMinimo() %></small>
         </td>
         <td>
-                            <span class="<%= asta.isScaduta() ? "status-closed" : "status-open" %>">
-                                <%= DateUtil.getTempoRimanente(asta.getScadenza()) %>
-                            </span>
+          <span class="<%= asta.isScaduta() ? "status-closed" : "status-open" %>">
+            <%= DateUtil.getTempoRimanente(asta.getScadenza()) %>
+          </span>
         </td>
         <td>
           <% if (asta.isChiusa()) { %>
@@ -116,7 +116,7 @@
         <th>💰 Prezzo Pagato</th>
         <th>👤 Venditore</th>
         <th>📅 Data Aggiudicazione</th>
-        <th>📍 Il Mio Indirizzo</th>
+        <th>📍 Indirizzo Spedizione</th>
         <th>⚙️ Azioni</th>
       </tr>
       <% for (Asta asta : asteVinte) {
@@ -128,7 +128,11 @@
           <% for (Articolo art : asta.getArticoli()) { %>
           <div style="margin-bottom: 8px;">
             <strong style="color: #2c3e50;"><%= art.getCodice() %> - <%= art.getNome() %></strong><br>
-            <small style="color: #666; line-height: 1.4;"><%= art.getDescrizione().length() > 60 ? art.getDescrizione().substring(0, 60) + "..." : art.getDescrizione() %></small><br>
+            <small style="color: #666; line-height: 1.4;">
+              <%= art.getDescrizione().length() > 60 ?
+                      art.getDescrizione().substring(0, 60) + "..." :
+                      art.getDescrizione() %>
+            </small><br>
             <small style="color: #888;">Valore base: €<%= String.format("%.2f", art.getPrezzo()) %></small>
           </div>
           <% } %>
@@ -140,19 +144,6 @@
             <span style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 8px 12px; border-radius: 15px; font-weight: bold; display: inline-block;">
               🏆 €<%= String.format("%.2f", asta.getPrezzoFinale()) %>
             </span>
-            <br>
-            <%
-              double risparmio = 0;
-              for (Articolo art : asta.getArticoli()) {
-                risparmio += art.getPrezzo();
-              }
-              risparmio = risparmio - asta.getPrezzoFinale();
-              String risparmioCss = risparmio > 0 ? "#27ae60" : "#e74c3c";
-              String risparmioText = risparmio > 0 ? "Risparmiato" : "Pagato extra";
-            %>
-            <small style="color: <%= risparmioCss %>; font-weight: bold; margin-top: 5px; display: block;">
-              <%= risparmio > 0 ? "💰" : "💸" %> <%= risparmioText %>: €<%= String.format("%.2f", Math.abs(risparmio)) %>
-            </small>
           </div>
         </td>
 
@@ -187,7 +178,7 @@
         <!-- Indirizzo Spedizione -->
         <td>
           <div style="background: linear-gradient(135deg, #e8f5e8, #d4edda); padding: 10px; border-radius: 8px; border-left: 4px solid #28a745;">
-            <strong style="color: #155724;">📍 Spedire a:</strong><br>
+            <strong style="color: #155724;">📍 Il mio indirizzo:</strong><br>
             <span style="font-size: 14px; line-height: 1.4; color: #155724;">
               <%= utente.getIndirizzo() %>
             </span>
@@ -224,51 +215,6 @@
       </tr>
       <% } %>
     </table>
-
-    <!-- Statistiche riassuntive aste vinte -->
-    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-      <%
-        int totaleAsteVinte = asteVinte.size();
-        double spesaTotale = 0.0;
-        double valoreTotaleArticoli = 0.0;
-
-        for (Asta asta : asteVinte) {
-          spesaTotale += asta.getPrezzoFinale();
-          for (Articolo art : asta.getArticoli()) {
-            valoreTotaleArticoli += art.getPrezzo();
-          }
-        }
-
-        double risparmiTotali = valoreTotaleArticoli - spesaTotale;
-        double percentualeRisparmio = valoreTotaleArticoli > 0 ? (risparmiTotali / valoreTotaleArticoli) * 100 : 0;
-      %>
-
-      <div style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-        <h4 style="margin: 0; font-size: 16px;">🏆 Aste Vinte</h4>
-        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;"><%= totaleAsteVinte %></p>
-        <small>aggiudicate</small>
-      </div>
-
-      <div style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-        <h4 style="margin: 0; font-size: 16px;">💳 Spesa Totale</h4>
-        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;">€<%= String.format("%.2f", spesaTotale) %></p>
-        <small>investimento</small>
-      </div>
-
-      <div style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-        <h4 style="margin: 0; font-size: 16px;">💰 Valore Articoli</h4>
-        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;">€<%= String.format("%.2f", valoreTotaleArticoli) %></p>
-        <small>valore originale</small>
-      </div>
-
-      <div style="background: linear-gradient(135deg, <%= risparmiTotali >= 0 ? "#f39c12, #e67e22" : "#9b59b6, #8e44ad" %>); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-        <h4 style="margin: 0; font-size: 16px;"><%= risparmiTotali >= 0 ? "💰 Risparmiato" : "💸 Extra Pagato" %></h4>
-        <p style="font-size: 24px; font-weight: bold; margin: 5px 0;">
-          <%= risparmiTotali >= 0 ? "+" : "" %>€<%= String.format("%.2f", risparmiTotali) %>
-        </p>
-        <small>(<%= String.format("%.1f", Math.abs(percentualeRisparmio)) %>%)</small>
-      </div>
-    </div>
   </div>
   <% } %>
 
@@ -279,6 +225,5 @@
   <% } %>
 </div>
 
-<%@ include file="common/footer.jsp" %>
 </body>
 </html>

@@ -172,9 +172,5 @@
   </div>
 </div>
 
-<div style="text-align: center; padding: 20px; margin-top: 40px; color: rgba(255,255,255,0.8);">
-  <p>© 2025 Aste Online - Politecnico di Milano</p>
-  <p><small>🚀 Powered by Jakarta EE 9+ & Modern Web Technologies</small></p>
-</div>
 </body>
 </html>

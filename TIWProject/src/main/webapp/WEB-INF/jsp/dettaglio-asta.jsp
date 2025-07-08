@@ -28,28 +28,28 @@
     <div class="user-info">
         Benvenuto, <%= utente.getNomeCompleto() %>
         <% if (isVenditore) { %>
-        <span style="background: #3498db; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px;">📦 TUA ASTA</span>
+        <span style="background: #3498db; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px;">TUA ASTA</span>
         <% } else if (isVincitore) { %>
-        <span style="background: #27ae60; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px;">🏆 HAI VINTO</span>
+        <span style="background: #27ae60; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px;">HAI VINTO</span>
         <% } else if (isPartecipante) { %>
-        <span style="background: #f39c12; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px;">💰 HAI PARTECIPATO</span>
+        <span style="background: #f39c12; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px;">HAI PARTECIPATO</span>
         <% } %>
     </div>
 
     <!-- Informazioni asta -->
     <div class="form-container">
-        <h2>🎯 Dettagli Asta #<%= asta.getId() %></h2>
+        <h2>Dettagli Asta #<%= asta.getId() %></h2>
 
         <!-- Badge stato asta -->
         <div style="text-align: center; margin-bottom: 20px;">
             <% if (asta.isChiusa()) { %>
             <% if (vincitore != null) { %>
             <div style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 15px 25px; border-radius: 25px; display: inline-block; font-size: 18px; font-weight: bold;">
-                🏆 ASTA CONCLUSA - VENDUTA
+                ASTA CONCLUSA - VENDUTA
             </div>
             <% } else { %>
             <div style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 15px 25px; border-radius: 25px; display: inline-block; font-size: 18px; font-weight: bold;">
-                ❌ ASTA CONCLUSA - NON VENDUTA
+                ASTA CONCLUSA - NON VENDUTA
             </div>
             <% } %>
             <% } else if (asta.isScaduta()) { %>
@@ -67,7 +67,7 @@
             </div>
             <% } else { %>
             <div style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 15px 25px; border-radius: 25px; display: inline-block; font-size: 18px; font-weight: bold;">
-                🟢 ASTA ATTIVA
+                ASTA ATTIVA
             </div>
             <% } %>
         </div>
@@ -95,7 +95,7 @@
         <!-- Informazioni generali asta -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
             <div class="form-group">
-                <label>👤 Venditore:</label>
+                <label>Venditore:</label>
                 <div style="background-color: #f8f9fa; padding: 10px; border-radius: 8px;">
                     <strong><%= venditore.getNomeCompleto() %></strong><br>
                     <small>@<%= venditore.getUsername() %></small>
@@ -103,12 +103,12 @@
             </div>
 
             <div class="form-group">
-                <label>💵 Prezzo Iniziale:</label>
+                <label>rezzo Iniziale:</label>
                 <p style="font-size: 18px; font-weight: bold; color: #3498db;">€<%= String.format("%.2f", asta.getPrezzoIniziale()) %></p>
             </div>
 
             <div class="form-group">
-                <label>📈 Rialzo Minimo:</label>
+                <label>Rialzo Minimo:</label>
                 <p style="font-size: 18px; font-weight: bold; color: #e74c3c;">€<%= asta.getRialzoMinimo() %></p>
             </div>
 
@@ -117,7 +117,7 @@
                 <p style="font-size: 16px; font-weight: bold;"><%= DateUtil.formatDateTime(asta.getScadenza()) %></p>
                 <% if (!asta.isChiusa() && !asta.isScaduta()) { %>
                 <p style="color: #e74c3c; font-weight: bold;">
-                    ⏳ <%= DateUtil.getTempoRimanente(asta.getScadenza()) %>
+                    <%= DateUtil.getTempoRimanente(asta.getScadenza()) %>
                 </p>
                 <% } %>
             </div>
@@ -126,19 +126,19 @@
         <!-- Statistiche asta -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
             <div style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-                <h4 style="margin: 0; font-size: 14px;">💰 Offerta Attuale</h4>
+                <h4 style="margin: 0; font-size: 14px;">Offerta Attuale</h4>
                 <p style="font-size: 20px; font-weight: bold; margin: 5px 0;">
                     €<%= String.format("%.2f", asta.getOffertaMassima()) %>
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-                <h4 style="margin: 0; font-size: 14px;">🔢 Offerte Totali</h4>
+                <h4 style="margin: 0; font-size: 14px;">Offerte Totali</h4>
                 <p style="font-size: 20px; font-weight: bold; margin: 5px 0;"><%= offerte != null ? offerte.size() : 0 %></p>
             </div>
 
             <div style="background: linear-gradient(135deg, #1abc9c, #16a085); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-                <h4 style="margin: 0; font-size: 14px;">👥 Partecipanti</h4>
+                <h4 style="margin: 0; font-size: 14px;">Partecipanti</h4>
                 <p style="font-size: 20px; font-weight: bold; margin: 5px 0;"><%= numeroPartecipanti %></p>
             </div>
         </div>
@@ -147,7 +147,7 @@
     <!-- Sezione risultato asta (solo se chiusa) -->
     <% if (asta.isChiusa()) { %>
     <div class="form-container">
-        <h2><%= vincitore != null ? "🏆 Risultato Asta - VENDUTA" : "❌ Risultato Asta - NON VENDUTA" %></h2>
+        <h2><%= vincitore != null ? " Risultato Asta - VENDUTA" : " Risultato Asta - NON VENDUTA" %></h2>
 
         <% if (vincitore != null) { %>
         <!-- Asta venduta -->
@@ -155,7 +155,7 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
                 <!-- Aggiudicatario -->
                 <div>
-                    <h4 style="color: #155724; margin-bottom: 15px;">🏆 Aggiudicatario</h4>
+                    <h4 style="color: #155724; margin-bottom: 15px;">Aggiudicatario</h4>
                     <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <p style="margin: 0; font-size: 18px; font-weight: bold; color: #2c3e50;">
                             <%= vincitore.getNomeCompleto() %>
@@ -168,7 +168,7 @@
 
                 <!-- Prezzo Finale -->
                 <div>
-                    <h4 style="color: #155724; margin-bottom: 15px;">💰 Prezzo Finale</h4>
+                    <h4 style="color: #155724; margin-bottom: 15px;">Prezzo Finale</h4>
                     <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <p style="margin: 0; font-size: 24px; font-weight: bold; color: #27ae60;">
                             €<%= String.format("%.2f", asta.getPrezzoFinale()) %>
@@ -188,7 +188,7 @@
             <!-- Indirizzo di Spedizione (solo per venditore e vincitore) -->
             <% if (isVenditore || isVincitore) { %>
             <div style="margin-top: 20px;">
-                <h4 style="color: #155724; margin-bottom: 15px;">📍 Indirizzo di Spedizione</h4>
+                <h4 style="color: #155724; margin-bottom: 15px;">Indirizzo di Spedizione</h4>
                 <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #2c3e50;">
                         <%= vincitore.getIndirizzo() %>
@@ -196,7 +196,7 @@
                     <% if (isVenditore) { %>
                     <div style="margin-top: 10px; padding: 10px; background-color: #fff3cd; border-radius: 5px;">
                         <small style="color: #856404;">
-                            <strong>💡 Promemoria:</strong> Procedi con la spedizione e mantieni i documenti di tracking.
+                            <strong>Promemoria:</strong> Procedi con la spedizione e mantieni i documenti di tracking.
                         </small>
                     </div>
                     <% } %>
@@ -232,11 +232,11 @@
         <h3>💰 Cronologia Offerte (<%= offerte.size() %>)</h3>
         <table>
             <tr>
-                <th>🏆 Pos.</th>
-                <th>👤 Offerente</th>
-                <th>💵 Importo</th>
-                <th>📅 Data/Ora</th>
-                <th>📊 Status</th>
+                <th>Pos.</th>
+                <th>Offerente</th>
+                <th>Importo</th>
+                <th>Data/Ora</th>
+                <th>Status</th>
             </tr>
             <% for (int i = 0; i < offerte.size(); i++) {
                 Offerta offerta = offerte.get(i);
@@ -279,7 +279,7 @@
     </div>
     <% } else { %>
     <div class="alert alert-info">
-        📭 <strong>Nessuna offerta ancora ricevuta.</strong>
+        <strong>Nessuna offerta ancora ricevuta.</strong>
         <% if (!asta.isChiusa() && !asta.isScaduta()) { %>
         Sii il primo a fare un'offerta!
         <% } %>
@@ -291,7 +291,7 @@
     <div style="text-align: center; margin: 30px 0;">
         <a href="offerta?id=<%= asta.getId() %>" class="btn btn-success"
            style="text-decoration: none; font-size: 18px; padding: 15px 30px;">
-            💰 Fai la tua Offerta
+            Fai la tua Offerta
         </a>
     </div>
     <% } %>
@@ -308,11 +308,10 @@
         </a>
         <% } %>
         <a href="home" class="link-button" style="font-size: 16px;">
-            🏠 Home
+            Home
         </a>
     </div>
 </div>
 
-<%@ include file="common/footer.jsp" %>
 </body>
 </html>
