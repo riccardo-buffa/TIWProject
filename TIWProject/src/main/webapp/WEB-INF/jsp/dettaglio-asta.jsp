@@ -103,7 +103,7 @@
             </div>
 
             <div class="form-group">
-                <label>rezzo Iniziale:</label>
+                <label>Prezzo Iniziale:</label>
                 <p style="font-size: 18px; font-weight: bold; color: #3498db;">€<%= String.format("%.2f", asta.getPrezzoIniziale()) %></p>
             </div>
 
@@ -122,33 +122,11 @@
                 <% } %>
             </div>
         </div>
-
-        <!-- Statistiche asta -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
-            <div style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-                <h4 style="margin: 0; font-size: 14px;">Offerta Attuale</h4>
-                <p style="font-size: 20px; font-weight: bold; margin: 5px 0;">
-                    €<%= String.format("%.2f", asta.getOffertaMassima()) %>
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-                <h4 style="margin: 0; font-size: 14px;">Offerte Totali</h4>
-                <p style="font-size: 20px; font-weight: bold; margin: 5px 0;"><%= offerte != null ? offerte.size() : 0 %></p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #1abc9c, #16a085); color: white; padding: 15px; border-radius: 10px; text-align: center;">
-                <h4 style="margin: 0; font-size: 14px;">Partecipanti</h4>
-                <p style="font-size: 20px; font-weight: bold; margin: 5px 0;"><%= numeroPartecipanti %></p>
-            </div>
-        </div>
     </div>
 
     <!-- Sezione risultato asta (solo se chiusa) -->
     <% if (asta.isChiusa()) { %>
     <div class="form-container">
-        <h2><%= vincitore != null ? " Risultato Asta - VENDUTA" : " Risultato Asta - NON VENDUTA" %></h2>
-
         <% if (vincitore != null) { %>
         <!-- Asta venduta -->
         <div style="background: linear-gradient(135deg, #d4edda, #c3e6cb); padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
@@ -184,42 +162,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Indirizzo di Spedizione (solo per venditore e vincitore) -->
-            <% if (isVenditore || isVincitore) { %>
-            <div style="margin-top: 20px;">
-                <h4 style="color: #155724; margin-bottom: 15px;">Indirizzo di Spedizione</h4>
-                <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    <p style="margin: 0; font-size: 16px; line-height: 1.5; color: #2c3e50;">
-                        <%= vincitore.getIndirizzo() %>
-                    </p>
-                    <% if (isVenditore) { %>
-                    <div style="margin-top: 10px; padding: 10px; background-color: #fff3cd; border-radius: 5px;">
-                        <small style="color: #856404;">
-                            <strong>Promemoria:</strong> Procedi con la spedizione e mantieni i documenti di tracking.
-                        </small>
-                    </div>
-                    <% } %>
-                </div>
-            </div>
-            <% } %>
         </div>
-        <% } else { %>
-        <!-- Asta non venduta -->
-        <div style="background: linear-gradient(135deg, #f8d7da, #f1c2c7); padding: 20px; border-radius: 10px; border-left: 5px solid #dc3545;">
-            <div style="text-align: center;">
-                <h3 style="color: #721c24; margin-bottom: 15px;">Nessuna offerta ricevuta</h3>
-                <p style="color: #721c24; font-size: 16px;">
-                    Questa asta non ha ricevuto alcuna offerta ed è quindi non venduta.
-                </p>
-                <% if (isVenditore) { %>
-                <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
-                    <p style="color: #6c757d; margin: 0;">
-                        <strong>💡 Suggerimenti:</strong> Considera di ricreare l'asta con un prezzo iniziale più basso
-                        o una descrizione più dettagliata degli articoli.
-                    </p>
-                </div>
-                <% } %>
             </div>
         </div>
         <% } %>
