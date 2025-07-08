@@ -183,11 +183,6 @@
               <%= utente.getIndirizzo() %>
             </span>
           </div>
-          <div style="margin-top: 8px; padding: 8px; background-color: #fff3cd; border-radius: 5px;">
-            <small style="color: #856404;">
-              <strong>💡 Promemoria:</strong> Il venditore dovrebbe aver già spedito gli articoli a questo indirizzo.
-            </small>
-          </div>
         </td>
 
         <!-- Azioni -->
