@@ -15,7 +15,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acquisto - Aste Online</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <%@ include file="common/header.jsp" %>
@@ -182,11 +182,6 @@
             <span style="font-size: 14px; line-height: 1.4; color: #155724;">
               <%= utente.getIndirizzo() %>
             </span>
-          </div>
-          <div style="margin-top: 8px; padding: 8px; background-color: #fff3cd; border-radius: 5px;">
-            <small style="color: #856404;">
-              <strong>💡 Promemoria:</strong> Il venditore dovrebbe aver già spedito gli articoli a questo indirizzo.
-            </small>
           </div>
         </td>
 
