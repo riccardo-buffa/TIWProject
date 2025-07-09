@@ -1,0 +1,137 @@
+sequenceDiagram
+    participant U as User/Browser
+    participant AS as AcquistoServlet
+    participant CRAS as CreaAstaServlet
+    participant DS as DettaglioAstaServlet
+    participant OS as OffertaServlet
+    participant CHS as ChiudiAstaServlet
+    participant DAO as DAO Layer
+    participant DB as Database
+    Note over U,DB: 6. CREAZIONE ASTA
+
+    U->>CRAS: POST /crea-asta (articoli[], rialzo, scadenza)
+    CRAS->>CRAS: checkSession()
+    CRAS->>DAO: articoloDAO.getArticoliGiaInAsteAttive(articoliIds)
+    DAO->>DB: SELECT articolo_id FROM asta_articoli WHERE asta_id IN (SELECT id FROM aste WHERE chiusa=FALSE)
+    DB-->>DAO: List<Integer> articoliConflitto
+    DAO-->>CRAS: articoliConflitto
+
+    alt No Conflicts
+    CRAS->>DAO: articoloDAO.getArticoliByIds(articoliIds)
+    DAO->>DB: SELECT * FROM articoli WHERE id IN (...)
+    DB-->>DAO: List<Articolo> articoli
+    DAO-->>CRAS: articoli
+
+    CRAS->>CRAS: calculatePrezzoIniziale(articoli)
+    CRAS->>DAO: astaDAO.creaAsta(asta, articoliIds)
+    DAO->>DB: BEGIN TRANSACTION
+    DAO->>DB: INSERT INTO aste VALUES(...)
+    DAO->>DB: INSERT INTO asta_articoli VALUES(...)
+    DAO->>DB: COMMIT
+    DB-->>DAO: success/failure
+    DAO-->>CRAS: boolean result
+    CRAS-->>U: redirect to /vendo
+    else Conflicts Found
+    CRAS-->>U: forward to crea-asta-error.jsp
+    end
+
+    Note over U,DB: 7. RICERCA E ACQUISTO
+
+    U->>AS: POST /acquisto (ricerca)
+    AS->>AS: checkSession()
+    AS->>DAO: astaDAO.cercaAste(parolaChiave)
+    DAO->>DB: SELECT aste WHERE articoli.nome LIKE ? OR articoli.descrizione LIKE ?
+    DB-->>DAO: List<Asta> risultati
+    DAO-->>AS: risultati
+
+    AS->>DAO: astaDAO.getAsteVinte(utente.getId())
+    DAO->>DB: SELECT aste WHERE vincitore_id=? AND chiusa=TRUE
+    DB-->>DAO: List<Asta> asteVinte
+    DAO-->>AS: asteVinte
+
+    AS-->>U: forward to acquisto.jsp
+
+    Note over U,DB: 8. DETTAGLIO ASTA
+
+    U->>DS: GET /dettaglio-asta?id=123
+    DS->>DS: checkSession()
+    DS->>DAO: astaDAO.getById(astaId)
+    DAO->>DB: SELECT * FROM aste WHERE id=?
+    DB-->>DAO: Asta object
+    DAO-->>DS: asta
+
+    DS->>DAO: offertaDAO.getOfferteByAsta(astaId)
+    DAO->>DB: SELECT offerte WHERE asta_id=? ORDER BY importo DESC
+    DB-->>DAO: List<Offerta> offerte
+    DAO-->>DS: offerte
+
+    DS->>DAO: utenteDAO.getById(asta.getVenditoreId())
+    DAO->>DB: SELECT * FROM utenti WHERE id=?
+    DB-->>DAO: Utente venditore
+    DAO-->>DS: venditore
+
+    DS-->>U: forward to dettaglio-asta.jsp
+
+    Note over U,DB: 9. FARE OFFERTA
+
+    U->>OS: POST /offerta (astaId, importo)
+    OS->>OS: checkSession()
+    OS->>DAO: astaDAO.getById(astaId)
+    DAO->>DB: SELECT * FROM aste WHERE id=?
+    DB-->>DAO: Asta object
+    DAO-->>OS: asta
+
+    OS->>OS: validateOfferta(importo, asta)
+
+    alt Valid Offer
+    OS->>DAO: offertaDAO.creaOfferta(offerta)
+    DAO->>DB: INSERT INTO offerte VALUES(...)
+    DB-->>DAO: success/failure
+    DAO-->>OS: boolean result
+    OS-->>U: forward to offerta.jsp (success message)
+    else Invalid Offer
+    OS-->>U: forward to offerta.jsp (error message)
+    end
+
+    Note over U,DB: 10. CHIUSURA ASTA
+
+    U->>CHS: POST /chiudi-asta (astaId)
+    CHS->>CHS: checkSession()
+    CHS->>DAO: astaDAO.getById(astaId)
+    DAO->>DB: SELECT * FROM aste WHERE id=?
+    DB-->>DAO: Asta object
+    DAO-->>CHS: asta
+
+    CHS->>CHS: validateChiusura(asta, utente)
+
+    alt Valid Closure
+    CHS->>DAO: offertaDAO.getOffertaMassima(astaId)
+    DAO->>DB: SELECT MAX(importo) FROM offerte WHERE asta_id=?
+    DB-->>DAO: Double offertaMassima
+    DAO-->>CHS: offertaMassima
+
+    CHS->>DAO: offertaDAO.getVincitore(astaId)
+    DAO->>DB: SELECT offerente_id FROM offerte WHERE asta_id=? ORDER BY importo DESC, data_offerta ASC LIMIT 1
+    DB-->>DAO: Integer vincitoreId
+    DAO-->>CHS: vincitoreId
+
+    opt Has Winner
+    CHS->>DAO: articoloDAO.marcaVenduti(articoliIds)
+    DAO->>DB: UPDATE articoli SET venduto=TRUE WHERE id IN (...)
+    DB-->>DAO: success
+    DAO-->>CHS: success
+    end
+
+    CHS->>DAO: astaDAO.chiudiAsta(astaId, vincitoreId, prezzoFinale)
+    DAO->>DB: UPDATE aste SET chiusa=TRUE, vincitore_id=?, prezzo_finale=? WHERE id=?
+    DB-->>DAO: success/failure
+    DAO-->>CHS: boolean result
+
+    CHS-->>U: redirect to /dettaglio-asta?id=123
+    else Invalid Closure
+    CHS-->>U: sendError(403/400)
+    end
+
+    Note over U,DB: 11. GESTIONE ERRORI E SESSIONI
+
+    Note over LS,CHS: Tutti i servlet (eccetto Login/Registrazione) verificano:<br/>- HttpSession session = request.getSession(false)<br/>- if (session == null || session.getAttribute("utente") == null)<br/>- return redirect to login.html

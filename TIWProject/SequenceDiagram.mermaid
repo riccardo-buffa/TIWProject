@@ -1,0 +1,88 @@
+sequenceDiagram
+    participant U as User/Browser
+    participant LS as LoginServlet
+    participant RS as RegistrazioneServlet
+    participant HS as HomeServlet
+    participant VS as VendoServlet
+    participant CAS as CreaArticoloServlet
+    participant DAO as DAO Layer
+    participant DB as Database
+
+    Note over U,DB: 1. FASE DI AUTENTICAZIONE
+
+    U->>LS: POST /login (username, password)
+    LS->>DAO: utenteDAO.login(username, password)
+    DAO->>DB: SELECT * FROM utenti WHERE username=? AND password=?
+    DB-->>DAO: User data or null
+    DAO-->>LS: Utente object or null
+
+    alt Login Success
+        LS->>LS: session.setAttribute("utente", utente)
+        LS-->>U: redirect to /home
+    else Login Failed
+        LS-->>U: forward to login-error.jsp
+    end
+
+    Note over U,DB: 2. REGISTRAZIONE UTENTE
+
+    U->>RS: POST /registrazione (user data)
+    RS->>RS: validateInput(userData)
+    RS->>DAO: utenteDAO.existsByUsername(username)
+    DAO->>DB: SELECT COUNT(*) FROM utenti WHERE username=?
+    DB-->>DAO: count
+    DAO-->>RS: boolean exists
+
+    alt Username Available
+        RS->>DAO: utenteDAO.creaUtente(utente)
+        DAO->>DB: INSERT INTO utenti VALUES(...)
+        DB-->>DAO: success/failure
+        DAO-->>RS: boolean result
+        RS->>RS: session.setAttribute("utente", utente)
+        RS-->>U: forward to registrazione-successo.jsp
+    else Username Exists
+        RS-->>U: forward to registrazione-error.jsp
+    end
+
+    Note over U,DB: 3. NAVIGAZIONE PRINCIPALE
+
+    U->>HS: GET /home
+    HS->>HS: checkSession()
+    HS-->>U: forward to home.jsp
+
+    Note over U,DB: 4. GESTIONE VENDITE
+
+    U->>VS: GET /vendo
+    VS->>VS: checkSession()
+    VS->>DAO: astaDAO.getAsteByVenditore(utente.getId(), false)
+    DAO->>DB: SELECT aste WHERE venditore_id=? AND chiusa=?
+    DB-->>DAO: List<Asta> asteAperte
+    DAO-->>VS: asteAperte
+
+    VS->>DAO: astaDAO.getAsteByVenditore(utente.getId(), true)
+    DAO->>DB: SELECT aste WHERE venditore_id=? AND chiusa=?
+    DB-->>DAO: List<Asta> asteChiuse
+    DAO-->>VS: asteChiuse
+
+    VS->>DAO: articoloDAO.getArticoliDisponibili(utente.getId())
+    DAO->>DB: SELECT articoli WHERE proprietario_id=? AND venduto=FALSE
+    DB-->>DAO: List<Articolo> articoli
+    DAO-->>VS: articoli
+
+    VS-->>U: forward to vendo.jsp
+
+    Note over U,DB: 5. CREAZIONE ARTICOLO
+
+    U->>CAS: POST /crea-articolo (multipart form)
+    CAS->>CAS: checkSession()
+    CAS->>CAS: handleImageUpload(filePart)
+    CAS->>CAS: createArticolo(formData)
+    CAS->>DAO: articoloDAO.creaArticolo(articolo)
+    DAO->>DB: INSERT INTO articoli VALUES(...)
+    DB-->>DAO: success/failure
+    DAO-->>CAS: boolean result
+
+    alt Success
+        CAS-->>U: redirect to /vendo
+    else Error
+        CAS-->>U: forward to crea-articolo-error.jsp
+    end
