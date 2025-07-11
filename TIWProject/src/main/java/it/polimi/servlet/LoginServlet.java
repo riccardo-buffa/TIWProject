@@ -32,17 +32,17 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        System.out.println("🔐 [Jakarta] Tentativo login per: " + username);
+        System.out.println(" Tentativo login per: " + username);
 
         Utente utente = utenteDAO.login(username, password);
 
         if (utente != null) {
             HttpSession session = request.getSession();
             session.setAttribute("utente", utente);
-            System.out.println("✅ [Jakarta] Login successo per: " + username);
+            System.out.println(" Login successo per: " + username);
             response.sendRedirect("home");
         } else {
-            System.out.println("❌ [Jakarta] Login fallito per: " + username);
+            System.out.println(" Login fallito per: " + username);
             request.setAttribute("errore", "Username o password non corretti!");
             request.setAttribute("username", username);
             request.getRequestDispatcher("/WEB-INF/jsp/login-error.jsp").forward(request, response);

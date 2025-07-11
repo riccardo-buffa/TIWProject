@@ -20,13 +20,13 @@ public class HomeServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("utente") == null) {
-            System.out.println("❌ [Jakarta] Accesso negato - Utente non loggato");
+            System.out.println(" Accesso negato - Utente non loggato");
             response.sendRedirect("login.html");
             return;
         }
 
         Utente utente = (Utente) session.getAttribute("utente");
-        System.out.println("✅ [Jakarta] Accesso home per: " + utente.getUsername());
+        System.out.println(" Accesso home per: " + utente.getUsername());
 
         request.setAttribute("utente", utente);
         request.getRequestDispatcher("/WEB-INF/jsp/home.jsp").forward(request, response);

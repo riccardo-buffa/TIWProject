@@ -16,9 +16,9 @@
 <div class="header">
     <h1>Aste Online</h1>
     <div class="nav-links">
-        <a href="home">🏠 Home</a>
-        <a href="vendo">📦 Vendo</a>
-        <a href="acquisto">🛒 Acquisto</a>
+        <a href="home"> Home</a>
+        <a href="vendo"> Vendo</a>
+        <a href="acquisto"> Acquisto</a>
         <a href="login.html">Logout</a>
     </div>
 </div>

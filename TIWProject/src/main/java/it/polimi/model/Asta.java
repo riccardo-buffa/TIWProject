@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Asta {
     private int id;
-    private double prezzoIniziale;      // primitivo double
+    private double prezzoIniziale;
     private int rialzoMinimo;
     private LocalDateTime scadenza;
     private boolean chiusa;
     private int venditoreId;
-    private Integer vincitoreId;        // wrapper Integer (può essere null)
-    private Double prezzoFinale;        // wrapper Double (può essere null)
+    private Integer vincitoreId;
+    private Double prezzoFinale;       
     private List<Articolo> articoli;
     private Double offertaMassima;      // wrapper Double (può essere null)
 

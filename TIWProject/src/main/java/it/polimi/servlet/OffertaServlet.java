@@ -45,11 +45,11 @@ public class OffertaServlet extends HttpServlet {
             int astaId = Integer.parseInt(request.getParameter("astaId"));
             double importoOfferta = Double.parseDouble(request.getParameter("importo"));
 
-            System.out.println("💰 [Jakarta] Offerta di €" + importoOfferta + " per asta " + astaId + " da utente: " + utente.getUsername());
+            System.out.println(" Offerta di €" + importoOfferta + " per asta " + astaId + " da utente: " + utente.getUsername());
 
             Asta asta = astaDAO.getById(astaId);
             if (asta == null || asta.isChiusa() || asta.isScaduta()) {
-                System.err.println("❌ [Jakarta] Asta non valida o chiusa: " + astaId);
+                System.err.println(" Asta non valida o chiusa: " + astaId);
                 mostraFormOfferta(request, response, "Asta non valida o chiusa");
                 return;
             }
@@ -58,7 +58,7 @@ public class OffertaServlet extends HttpServlet {
             double minimaRichiesta = offertaMassima + asta.getRialzoMinimo();
 
             if (importoOfferta < minimaRichiesta) {
-                System.err.println("❌ [Jakarta] Offerta troppo bassa: €" + importoOfferta + " < €" + minimaRichiesta);
+                System.err.println(" Offerta troppo bassa: €" + importoOfferta + " < €" + minimaRichiesta);
                 mostraFormOfferta(request, response, "L'offerta deve essere almeno €" + minimaRichiesta);
                 return;
             }
@@ -66,18 +66,18 @@ public class OffertaServlet extends HttpServlet {
             Offerta offerta = new Offerta(astaId, utente.getId(), importoOfferta);
 
             if (offertaDAO.creaOfferta(offerta)) {
-                System.out.println("✅ [Jakarta] Offerta registrata con successo");
+                System.out.println(" Offerta registrata con successo");
                 mostraFormOfferta(request, response, "Offerta inviata con successo!");
             } else {
-                System.err.println("❌ [Jakarta] Errore registrazione offerta");
+                System.err.println(" Errore registrazione offerta");
                 mostraFormOfferta(request, response, "Errore nell'invio dell'offerta");
             }
 
         } catch (NumberFormatException e) {
-            System.err.println("❌ [Jakarta] Errore formato numerico: " + e.getMessage());
+            System.err.println(" Errore formato numerico: " + e.getMessage());
             mostraFormOfferta(request, response, "Formato numerico non valido");
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] Errore gestione offerta: " + e.getMessage());
+            System.err.println(" Errore gestione offerta: " + e.getMessage());
             e.printStackTrace();
             mostraFormOfferta(request, response, "Errore nell'elaborazione dell'offerta");
         }
@@ -119,7 +119,7 @@ public class OffertaServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/offerta.jsp").forward(request, response);
 
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] Errore caricamento form offerta: " + e.getMessage());
+            System.err.println(" Errore caricamento form offerta: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore caricamento form");
         }

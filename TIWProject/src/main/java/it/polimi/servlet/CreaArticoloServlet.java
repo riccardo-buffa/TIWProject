@@ -62,7 +62,7 @@ public class CreaArticoloServlet extends HttpServlet {
                 nomeFileImmagine = salvaImmagine(filePart, request);
                 if (nomeFileImmagine == null) {
                     // Errore nel salvare l'immagine
-                    request.setAttribute("errore", "❌ Errore nel caricamento dell'immagine. Formati supportati: JPG, PNG, GIF (max 10MB)");
+                    request.setAttribute("errore", " Errore nel caricamento dell'immagine. Formati supportati: JPG, PNG, GIF (max 10MB)");
                     request.setAttribute("codice", codice);
                     request.setAttribute("nome", nome);
                     request.setAttribute("descrizione", descrizione);
@@ -72,16 +72,16 @@ public class CreaArticoloServlet extends HttpServlet {
                 }
             }
 
-            System.out.println("📦 [Jakarta] Creazione articolo: " + codice + " - " + nome +
+            System.out.println(" Creazione articolo: " + codice + " - " + nome +
                     (nomeFileImmagine != null ? " con immagine: " + nomeFileImmagine : " senza immagine"));
 
             Articolo articolo = new Articolo(codice, nome, descrizione, nomeFileImmagine, prezzo, utente.getId());
 
             if (articoloDAO.creaArticolo(articolo)) {
-                System.out.println("✅ [Jakarta] Articolo creato con successo: " + codice);
+                System.out.println(" Articolo creato con successo: " + codice);
                 response.sendRedirect("vendo");
             } else {
-                System.err.println("❌ [Jakarta] Errore creazione articolo nel database: " + codice);
+                System.err.println(" Errore creazione articolo nel database: " + codice);
 
                 // Se c'è stato un errore, elimina l'immagine caricata
                 if (nomeFileImmagine != null) {
@@ -92,10 +92,10 @@ public class CreaArticoloServlet extends HttpServlet {
             }
 
         } catch (NumberFormatException e) {
-            System.err.println("❌ [Jakarta] Prezzo non valido: " + e.getMessage());
+            System.err.println(" Prezzo non valido: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Prezzo non valido");
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] Errore creazione articolo: " + e.getMessage());
+            System.err.println(" Errore creazione articolo: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore nella creazione dell'articolo");
         }

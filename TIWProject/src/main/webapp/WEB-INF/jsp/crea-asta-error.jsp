@@ -95,7 +95,7 @@
             ← Torna alla pagina Vendo
         </a>
         <a href="home" class="btn btn-success" style="text-decoration: none;">
-            🏠 Vai alla Home
+             Vai alla Home
         </a>
     </div>
 </div>

@@ -36,11 +36,11 @@ public class DettaglioAstaServlet extends HttpServlet {
 
         try {
             int astaId = Integer.parseInt(request.getParameter("id"));
-            System.out.println("🔍 [Jakarta] Dettaglio asta " + astaId + " per utente: " + utente.getUsername());
+            System.out.println(" Dettaglio asta " + astaId + " per utente: " + utente.getUsername());
 
             Asta asta = astaDAO.getById(astaId);
             if (asta == null) {
-                System.err.println("❌ [Jakarta] Asta non trovata: " + astaId);
+                System.err.println(" Asta non trovata: " + astaId);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Asta non trovata");
                 return;
             }
@@ -55,7 +55,7 @@ public class DettaglioAstaServlet extends HttpServlet {
             Utente vincitore = null;
             if (asta.getVincitoreId() != null) {
                 vincitore = utenteDAO.getById(asta.getVincitoreId());
-                System.out.println("🏆 [Jakarta] Vincitore trovato: " + vincitore.getNomeCompleto() +
+                System.out.println(" Vincitore trovato: " + vincitore.getNomeCompleto() +
                         " con prezzo finale: €" + asta.getPrezzoFinale());
             }
 
@@ -74,7 +74,7 @@ public class DettaglioAstaServlet extends HttpServlet {
             boolean isPartecipante = offerte.stream()
                     .anyMatch(o -> o.getOfferenteId() == utente.getId());
 
-            System.out.println("📊 [Jakarta] Asta caricata - ID: " + astaId +
+            System.out.println(" Asta caricata - ID: " + astaId +
                     ", Offerte: " + offerte.size() +
                     ", Partecipanti: " + numeroPartecipanti +
                     ", Venditore: " + isVenditore +
@@ -96,10 +96,10 @@ public class DettaglioAstaServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/dettaglio-asta.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            System.err.println("❌ [Jakarta] ID asta non valido: " + request.getParameter("id"));
+            System.err.println(" ID asta non valido: " + request.getParameter("id"));
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID asta non valido");
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] Errore caricamento dettaglio asta: " + e.getMessage());
+            System.err.println(" Errore caricamento dettaglio asta: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore caricamento dettagli");
         }

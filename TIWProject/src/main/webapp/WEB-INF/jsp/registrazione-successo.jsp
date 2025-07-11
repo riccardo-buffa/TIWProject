@@ -23,19 +23,19 @@
     </div>
 
     <div class="alert alert-info" style="text-align: left;">
-      <h3>🚀 Ora puoi:</h3>
+      <h3> Ora puoi:</h3>
       <ul>
-        <li>📦 <strong>Vendere:</strong> Crea articoli e metti all'asta i tuoi oggetti</li>
-        <li>🛒 <strong>Comprare:</strong> Cerca aste interessanti e fai le tue offerte</li>
-        <li>🏆 <strong>Vincere:</strong> Aggiudicati gli oggetti che desideri</li>
-        <li>📊 <strong>Gestire:</strong> Monitora le tue aste e offerte</li>
+        <li> <strong>Vendere:</strong> Crea articoli e metti all'asta i tuoi oggetti</li>
+        <li> <strong>Comprare:</strong> Cerca aste interessanti e fai le tue offerte</li>
+        <li> <strong>Vincere:</strong> Aggiudicati gli oggetti che desideri</li>
+        <li> <strong>Gestire:</strong> Monitora le tue aste e offerte</li>
       </ul>
     </div>
 
     <div>
-      <a href="home" class="btn btn-success">🏠 Vai alla Home</a>
-      <a href="vendo" class="btn">📦 Inizia a Vendere</a>
-      <a href="acquisto" class="btn">🛒 Cerca Aste</a>
+      <a href="home" class="btn btn-success"> Vai alla Home</a>
+      <a href="vendo" class="btn"> Inizia a Vendere</a>
+      <a href="acquisto" class="btn"> Cerca Aste</a>
     </div>
 
     <div style="color: #6c757d; font-size: 14px; margin-top: 20px;">
@@ -43,12 +43,12 @@
     </div>
   </div>
 </div>
-</body>🚀 Ora puoi:</h3>
+</body> Ora puoi:</h3>
 <ul>
-  <li>📦 <strong>Vendere:</strong> Crea articoli e metti all'asta i tuoi oggetti</li>
-  <li>🛒 <strong>Comprare:</strong> Cerca aste interessanti e fai le tue offerte</li>
-  <li>🏆 <strong>Vincere:</strong> Aggiudicati gli oggetti che desideri</li>
-  <li>📊 <strong>Gestire:</strong> Monitora le tue aste e offerte</li>
+  <li> <strong>Vendere:</strong> Crea articoli e metti all'asta i tuoi oggetti</li>
+  <li> <strong>Comprare:</strong> Cerca aste interessanti e fai le tue offerte</li>
+  <li> <strong>Vincere:</strong> Aggiudicati gli oggetti che desideri</li>
+  <li> <strong>Gestire:</strong> Monitora le tue aste e offerte</li>
 </ul>
 </div>
 

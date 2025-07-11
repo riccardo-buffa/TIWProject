@@ -130,16 +130,16 @@
     <h3>📊 Cronologia Offerte (<%= offerte.size() %>)</h3>
     <table>
       <tr>
-        <th>👤 Offerente</th>
-        <th>💵 Importo</th>
-        <th>📅 Data/Ora</th>
-        <th>🏆 Posizione</th>
+        <th> Offerente</th>
+        <th> Importo</th>
+        <th> Data/Ora</th>
+        <th> Posizione</th>
       </tr>
       <% for (int i = 0; i < offerte.size(); i++) {
         Offerta offerta = offerte.get(i); %>
       <tr <% if (i == 0) { %>style="background-color: #f0f8ff; font-weight: bold;"<% } %>>
         <td>
-          <% if (i == 0) { %>🥇<% } else if (i == 1) { %>🥈<% } else if (i == 2) { %>🥉<% } %>
+          <% if (i == 0) { %><% } else if (i == 1) { %><% } else if (i == 2) { %><% } %>
           <%= offerta.getNomeOfferente() %>
         </td>
         <td>
@@ -150,7 +150,7 @@
         <td><%= DateUtil.formatDateTime(offerta.getDataOfferta()) %></td>
         <td>
           <% if (i == 0) { %>
-          <span class="status-open">🏆 Vincente</span>
+          <span class="status-open"> Vincente</span>
           <% } else { %>
           #<%= i + 1 %>
           <% } %>
@@ -161,7 +161,7 @@
   </div>
   <% } else { %>
   <div class="alert alert-info">
-    📭 <strong>Nessuna offerta ancora ricevuta.</strong> Sii il primo a fare un'offerta!
+    <strong>Nessuna offerta ancora ricevuta.</strong> Sii il primo a fare un'offerta!
   </div>
   <% } %>
 

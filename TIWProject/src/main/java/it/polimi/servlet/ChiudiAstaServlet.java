@@ -29,7 +29,7 @@ public class ChiudiAstaServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("utente") == null) {
-            System.out.println("❌ [Jakarta] Accesso negato - Sessione non valida");
+            System.out.println(" Accesso negato - Sessione non valida");
             response.sendRedirect("login.html");
             return;
         }
@@ -38,58 +38,58 @@ public class ChiudiAstaServlet extends HttpServlet {
 
         try {
             int astaId = Integer.parseInt(request.getParameter("astaId"));
-            System.out.println("🔒 [Jakarta] ===== INIZIO CHIUSURA ASTA " + astaId + " =====");
-            System.out.println("🔒 [Jakarta] Richiesta da utente: " + utente.getUsername() + " (ID: " + utente.getId() + ")");
+            System.out.println(" ===== INIZIO CHIUSURA ASTA " + astaId + " =====");
+            System.out.println(" Richiesta da utente: " + utente.getUsername() + " (ID: " + utente.getId() + ")");
 
             // Verifica esistenza e autorizzazione
             Asta asta = astaDAO.getById(astaId);
             if (asta == null) {
-                System.err.println("❌ [Jakarta] Asta non trovata: " + astaId);
+                System.err.println(" Asta non trovata: " + astaId);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Asta non trovata");
                 return;
             }
 
             if (asta.getVenditoreId() != utente.getId()) {
-                System.err.println("❌ [Jakarta] Accesso negato - Utente " + utente.getId() + " non è il venditore (venditore: " + asta.getVenditoreId() + ")");
+                System.err.println(" Accesso negato - Utente " + utente.getId() + " non è il venditore (venditore: " + asta.getVenditoreId() + ")");
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Non autorizzato a chiudere questa asta");
                 return;
             }
 
             // Verifica stato asta
-            System.out.println("🔍 [Jakarta] Verifica stato asta:");
+            System.out.println(" Verifica stato asta:");
             System.out.println("   - Scadenza: " + asta.getScadenza());
             System.out.println("   - Ora attuale: " + java.time.LocalDateTime.now());
             System.out.println("   - È scaduta: " + asta.isScaduta());
             System.out.println("   - È già chiusa: " + asta.isChiusa());
 
             if (!asta.isScaduta()) {
-                System.err.println("❌ [Jakarta] Asta non ancora scaduta");
+                System.err.println(" Asta non ancora scaduta");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "L'asta non è ancora scaduta");
                 return;
             }
 
             if (asta.isChiusa()) {
-                System.err.println("❌ [Jakarta] Asta già chiusa");
+                System.err.println(" Asta già chiusa");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "L'asta è già stata chiusa");
                 return;
             }
 
-            System.out.println("✅ [Jakarta] Asta valida per chiusura");
+            System.out.println(" Asta valida per chiusura");
 
             // Ricerca offerta massima
-            System.out.println("🔍 [Jakarta] ===== RICERCA OFFERTE =====");
+            System.out.println(" ===== RICERCA OFFERTE =====");
             Double offertaMassima = offertaDAO.getOffertaMassima(astaId);
-            System.out.println("🔍 [Jakarta] Offerta massima ricevuta: " + (offertaMassima != null ? "€" + offertaMassima : "NULL"));
+            System.out.println(" Offerta massima ricevuta: " + (offertaMassima != null ? "€" + offertaMassima : "NULL"));
 
             Integer vincitoreId = null;
             Double prezzoFinale = null;
 
             if (offertaMassima != null && offertaMassima > 0) {
-                System.out.println("✅ [Jakarta] Offerte trovate, ricerca vincitore...");
+                System.out.println(" Offerte trovate, ricerca vincitore...");
                 vincitoreId = offertaDAO.getVincitore(astaId);
                 prezzoFinale = offertaMassima;
 
-                System.out.println("🏆 [Jakarta] ===== RISULTATO ASTA =====");
+                System.out.println(" ===== RISULTATO ASTA =====");
                 System.out.println("   - Vincitore ID: " + vincitoreId);
                 System.out.println("   - Prezzo finale: €" + prezzoFinale);
                 System.out.println("   - Prezzo iniziale: €" + asta.getPrezzoIniziale());
@@ -103,7 +103,7 @@ public class ChiudiAstaServlet extends HttpServlet {
 
                 if (vincitoreId != null && vincitoreId > 0) {
                     // Marca articoli come venduti
-                    System.out.println("📦 [Jakarta] Marcatura articoli come venduti...");
+                    System.out.println(" Marcatura articoli come venduti...");
                     List<Integer> articoliIds = new ArrayList<>();
                     for (Articolo articolo : asta.getArticoli()) {
                         articoliIds.add(articolo.getId());
@@ -112,13 +112,13 @@ public class ChiudiAstaServlet extends HttpServlet {
 
                     if (!articoliIds.isEmpty()) {
                         articoloDAO.marcaVenduti(articoliIds);
-                        System.out.println("✅ [Jakarta] Marcati " + articoliIds.size() + " articoli come venduti");
+                        System.out.println(" Marcati " + articoliIds.size() + " articoli come venduti");
                     }
                 } else {
-                    System.err.println("⚠️ [Jakarta] Vincitore ID non valido: " + vincitoreId);
+                    System.err.println("⚠ Vincitore ID non valido: " + vincitoreId);
                 }
             } else {
-                System.out.println("📭 [Jakarta] ===== ASTA SENZA OFFERTE =====");
+                System.out.println(" ===== ASTA SENZA OFFERTE =====");
                 System.out.println("   - Nessuna offerta ricevuta");
                 System.out.println("   - L'asta verrà chiusa senza vincitore");
             }
@@ -127,7 +127,7 @@ public class ChiudiAstaServlet extends HttpServlet {
             Integer vincitoreFinal = (vincitoreId != null && vincitoreId > 0) ? vincitoreId : null;
             Double prezzoFinal = (prezzoFinale != null && prezzoFinale > 0) ? prezzoFinale : null;
 
-            System.out.println("💾 [Jakarta] ===== AGGIORNAMENTO DATABASE =====");
+            System.out.println(" ===== AGGIORNAMENTO DATABASE =====");
             System.out.println("   - Asta ID: " + astaId);
             System.out.println("   - Chiusa: TRUE");
             System.out.println("   - Vincitore finale: " + (vincitoreFinal != null ? vincitoreFinal : "NULL"));
@@ -137,10 +137,10 @@ public class ChiudiAstaServlet extends HttpServlet {
             boolean success = astaDAO.chiudiAsta(astaId, vincitoreFinal, prezzoFinal);
 
             if (success) {
-                System.out.println("✅ [Jakarta] Aggiornamento database completato con successo");
+                System.out.println(" Aggiornamento database completato con successo");
 
                 // Verifica immediata nel database
-                System.out.println("🔍 [Jakarta] ===== VERIFICA POST-AGGIORNAMENTO =====");
+                System.out.println(" ===== VERIFICA POST-AGGIORNAMENTO =====");
                 Asta astaAggiornata = astaDAO.getById(astaId);
 
                 if (astaAggiornata != null) {
@@ -154,35 +154,35 @@ public class ChiudiAstaServlet extends HttpServlet {
                             (prezzoFinal == null ? astaAggiornata.getPrezzoFinale() == null : Math.abs(prezzoFinal - astaAggiornata.getPrezzoFinale()) < 0.01);
 
                     if (isConsistent) {
-                        System.out.println("✅ [Jakarta] Dati nel database coerenti con l'aggiornamento");
+                        System.out.println(" Dati nel database coerenti con l'aggiornamento");
                     } else {
-                        System.err.println("⚠️ [Jakarta] ATTENZIONE: Dati nel database non coerenti!");
+                        System.err.println("⚠ ATTENZIONE: Dati nel database non coerenti!");
                         System.err.println("   Expected - Vincitore: " + vincitoreFinal + ", Prezzo: " + prezzoFinal);
                         System.err.println("   Found    - Vincitore: " + astaAggiornata.getVincitoreId() + ", Prezzo: " + astaAggiornata.getPrezzoFinale());
                     }
                 } else {
-                    System.err.println("❌ [Jakarta] ERRORE: Asta non trovata dopo l'aggiornamento!");
+                    System.err.println(" ERRORE: Asta non trovata dopo l'aggiornamento!");
                 }
 
-                System.out.println("🎯 [Jakarta] ===== CHIUSURA ASTA COMPLETATA =====");
-                System.out.println("🎯 [Jakarta] Reindirizzamento a dettaglio-asta?id=" + astaId);
+                System.out.println(" ===== CHIUSURA ASTA COMPLETATA =====");
+                System.out.println(" Reindirizzamento a dettaglio-asta?id=" + astaId);
 
                 response.sendRedirect("dettaglio-asta?id=" + astaId);
 
             } else {
-                System.err.println("❌ [Jakarta] ===== ERRORE AGGIORNAMENTO DATABASE =====");
-                System.err.println("❌ [Jakarta] L'operazione di chiusura è fallita");
+                System.err.println(" ===== ERRORE AGGIORNAMENTO DATABASE =====");
+                System.err.println(" L'operazione di chiusura è fallita");
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                         "Errore durante la chiusura dell'asta. Contattare l'amministratore.");
             }
 
         } catch (NumberFormatException e) {
-            System.err.println("❌ [Jakarta] ID asta non valido: " + request.getParameter("astaId"));
-            System.err.println("❌ [Jakarta] Errore parsing: " + e.getMessage());
+            System.err.println(" ID asta non valido: " + request.getParameter("astaId"));
+            System.err.println(" Errore parsing: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID asta non valido");
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] ===== ECCEZIONE DURANTE CHIUSURA ASTA =====");
-            System.err.println("❌ [Jakarta] Errore imprevisto: " + e.getMessage());
+            System.err.println(" ===== ECCEZIONE DURANTE CHIUSURA ASTA =====");
+            System.err.println(" Errore imprevisto: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Errore imprevisto durante la chiusura dell'asta");

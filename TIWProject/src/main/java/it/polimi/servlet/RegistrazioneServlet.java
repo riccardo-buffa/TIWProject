@@ -36,23 +36,23 @@ public class RegistrazioneServlet extends HttpServlet {
         String cognome = request.getParameter("cognome");
         String indirizzo = request.getParameter("indirizzo");
 
-        System.out.println("📝 [Jakarta] Tentativo registrazione per: " + username);
+        System.out.println(" Tentativo registrazione per: " + username);
 
         try {
             // Validazione dati
             String errore = validaDatiRegistrazione(username, password, confermaPassword, nome, cognome, indirizzo);
 
             if (errore != null) {
-                System.err.println("❌ [Jakarta] Errore validazione: " + errore);
+                System.err.println(" Errore validazione: " + errore);
                 mostraErroreRegistrazione(request, response, errore, username, nome, cognome, indirizzo);
                 return;
             }
 
             // Controlla se username già esiste
             if (utenteDAO.existsByUsername(username)) {
-                System.err.println("❌ [Jakarta] Username già esistente: " + username);
+                System.err.println(" Username già esistente: " + username);
                 mostraErroreRegistrazione(request, response,
-                        "❌ Username '" + username + "' già esistente. Scegline un altro!",
+                        " Username '" + username + "' già esistente. Scegline un altro!",
                         null, nome, cognome, indirizzo);
                 return;
             }
@@ -61,7 +61,7 @@ public class RegistrazioneServlet extends HttpServlet {
             Utente nuovoUtente = new Utente(username.trim(), password, nome.trim(), cognome.trim(), indirizzo.trim());
 
             if (utenteDAO.creaUtente(nuovoUtente)) {
-                System.out.println("✅ [Jakarta] Registrazione completata per: " + username);
+                System.out.println(" Registrazione completata per: " + username);
 
                 // Crea sessione e reindirizza
                 HttpSession session = request.getSession();
@@ -75,17 +75,17 @@ public class RegistrazioneServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/jsp/registrazione-successo.jsp").forward(request, response);
 
             } else {
-                System.err.println("❌ [Jakarta] Errore database durante registrazione: " + username);
+                System.err.println(" Errore database durante registrazione: " + username);
                 mostraErroreRegistrazione(request, response,
-                        "❌ Errore interno del server. Riprova più tardi.",
+                        " Errore interno del server. Riprova più tardi.",
                         username, nome, cognome, indirizzo);
             }
 
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] Eccezione durante registrazione: " + e.getMessage());
+            System.err.println(" Eccezione durante registrazione: " + e.getMessage());
             e.printStackTrace();
             mostraErroreRegistrazione(request, response,
-                    "❌ Errore imprevisto. Riprova più tardi.",
+                    " Errore imprevisto. Riprova più tardi.",
                     username, nome, cognome, indirizzo);
         }
     }
@@ -98,55 +98,55 @@ public class RegistrazioneServlet extends HttpServlet {
 
         // Controlla campi vuoti
         if (username == null || username.trim().isEmpty()) {
-            return "❌ Username è obbligatorio";
+            return " Username è obbligatorio";
         }
         if (password == null || password.isEmpty()) {
-            return "❌ Password è obbligatoria";
+            return " Password è obbligatoria";
         }
         if (confermaPassword == null || confermaPassword.isEmpty()) {
-            return "❌ Conferma password è obbligatoria";
+            return " Conferma password è obbligatoria";
         }
         if (nome == null || nome.trim().isEmpty()) {
-            return "❌ Nome è obbligatorio";
+            return " Nome è obbligatorio";
         }
         if (cognome == null || cognome.trim().isEmpty()) {
-            return "❌ Cognome è obbligatorio";
+            return " Cognome è obbligatorio";
         }
         if (indirizzo == null || indirizzo.trim().isEmpty()) {
-            return "❌ Indirizzo è obbligatorio";
+            return " Indirizzo è obbligatorio";
         }
 
         // Controlla lunghezze
         if (username.trim().length() < 3) {
-            return "❌ Username deve essere di almeno 3 caratteri";
+            return " Username deve essere di almeno 3 caratteri";
         }
         if (username.trim().length() > 50) {
-            return "❌ Username troppo lungo (massimo 50 caratteri)";
+            return " Username troppo lungo (massimo 50 caratteri)";
         }
         if (password.length() < 6) {
-            return "❌ Password deve essere di almeno 6 caratteri";
+            return " Password deve essere di almeno 6 caratteri";
         }
         if (password.length() > 100) {
-            return "❌ Password troppo lunga (massimo 100 caratteri)";
+            return " Password troppo lunga (massimo 100 caratteri)";
         }
         if (nome.trim().length() > 50) {
-            return "❌ Nome troppo lungo (massimo 50 caratteri)";
+            return " Nome troppo lungo (massimo 50 caratteri)";
         }
         if (cognome.trim().length() > 50) {
-            return "❌ Cognome troppo lungo (massimo 50 caratteri)";
+            return " Cognome troppo lungo (massimo 50 caratteri)";
         }
         if (indirizzo.trim().length() > 200) {
-            return "❌ Indirizzo troppo lungo (massimo 200 caratteri)";
+            return " Indirizzo troppo lungo (massimo 200 caratteri)";
         }
 
         // Controlla corrispondenza password
         if (!password.equals(confermaPassword)) {
-            return "❌ Le password non corrispondono";
+            return " Le password non corrispondono";
         }
 
         // Controlla caratteri username (solo lettere, numeri, punti, underscore)
         if (!username.matches("^[a-zA-Z0-9._]+$")) {
-            return "❌ Username può contenere solo lettere, numeri, punti e underscore";
+            return " Username può contenere solo lettere, numeri, punti e underscore";
         }
 
         return null; // Tutto OK

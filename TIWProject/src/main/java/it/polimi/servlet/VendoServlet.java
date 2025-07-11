@@ -31,14 +31,14 @@ public class VendoServlet extends HttpServlet {
         }
 
         Utente utente = (Utente) session.getAttribute("utente");
-        System.out.println("📦 [Jakarta] Caricamento pagina Vendo per: " + utente.getUsername());
+        System.out.println(" Caricamento pagina Vendo per: " + utente.getUsername());
 
         try {
             List<Asta> asteAperte = astaDAO.getAsteByVenditore(utente.getId(), false);
             List<Asta> asteChiuse = astaDAO.getAsteByVenditore(utente.getId(), true);
             List<Articolo> articoliDisponibili = articoloDAO.getArticoliDisponibili(utente.getId());
 
-            System.out.println("📊 [Jakarta] Dati caricati - Aste aperte: " + asteAperte.size() +
+            System.out.println(" Dati caricati - Aste aperte: " + asteAperte.size() +
                     ", Aste chiuse: " + asteChiuse.size() +
                     ", Articoli disponibili: " + articoliDisponibili.size());
 
@@ -50,7 +50,7 @@ public class VendoServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/vendo.jsp").forward(request, response);
 
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] Errore caricamento pagina Vendo: " + e.getMessage());
+            System.err.println(" Errore caricamento pagina Vendo: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore caricamento dati");
         }

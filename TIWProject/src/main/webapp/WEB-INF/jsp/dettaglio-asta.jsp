@@ -54,13 +54,13 @@
             <% } %>
             <% } else if (asta.isScaduta()) { %>
             <div style="background: linear-gradient(135deg, #f39c12, #e67e22); color: white; padding: 15px 25px; border-radius: 25px; display: inline-block; font-size: 18px; font-weight: bold;">
-                ⏰ ASTA SCADUTA
+                 ASTA SCADUTA
                 <% if (isVenditore) { %>
                 <form method="post" action="chiudi-asta" style="display: inline-block; margin-left: 15px;">
                     <input type="hidden" name="astaId" value="<%= asta.getId() %>">
                     <button type="submit" class="btn btn-danger" style="font-size: 14px; padding: 8px 15px;"
                             onclick="return confirm('Sei sicuro di voler chiudere questa asta?')">
-                        🔒 Chiudi Asta
+                         Chiudi Asta
                     </button>
                 </form>
                 <% } %>
@@ -74,7 +74,7 @@
 
         <!-- Articoli -->
         <div class="form-group">
-            <label>📦 Articoli in Asta:</label>
+            <label> Articoli in Asta:</label>
             <% for (Articolo art : asta.getArticoli()) { %>
             <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; background-color: #f9f9f9;">
                 <h4 style="color: #2c3e50; margin-bottom: 10px;">
@@ -87,7 +87,7 @@
                          style="max-width: 300px; height: auto; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 </div>
                 <% } %>
-                <p><strong>💰 Prezzo base: €<%= String.format("%.2f", art.getPrezzo()) %></strong></p>
+                <p><strong> Prezzo base: €<%= String.format("%.2f", art.getPrezzo()) %></strong></p>
             </div>
             <% } %>
         </div>
@@ -113,7 +113,7 @@
             </div>
 
             <div class="form-group">
-                <label>⏰ Scadenza:</label>
+                <label> Scadenza:</label>
                 <p style="font-size: 16px; font-weight: bold;"><%= DateUtil.formatDateTime(asta.getScadenza()) %></p>
                 <% if (!asta.isChiusa() && !asta.isScaduta()) { %>
                 <p style="color: #e74c3c; font-weight: bold;">
@@ -172,7 +172,7 @@
     <!-- Lista offerte -->
     <% if (offerte != null && !offerte.isEmpty()) { %>
     <div class="table-container">
-        <h3>💰 Cronologia Offerte (<%= offerte.size() %>)</h3>
+        <h3> Cronologia Offerte (<%= offerte.size() %>)</h3>
         <table>
             <tr>
                 <th>Pos.</th>
@@ -189,9 +189,9 @@
             <tr style="<%= isWinning ? "background-color: #f0f8ff; font-weight: bold;" : "" %>
                     <%= isCurrentUser ? "border-left: 4px solid #3498db;" : "" %>">
                 <td style="text-align: center;">
-                    <% if (i == 0) { %>🥇
-                    <% } else if (i == 1) { %>🥈
-                    <% } else if (i == 2) { %>🥉
+                    <% if (i == 0) { %>
+                    <% } else if (i == 1) { %>
+                    <% } else if (i == 2) { %>
                     <% } else { %>#<%= i + 1 %>
                     <% } %>
                 </td>
@@ -209,9 +209,9 @@
                 <td><%= DateUtil.formatDateTime(offerta.getDataOfferta()) %></td>
                 <td>
                     <% if (isWinning && asta.isChiusa()) { %>
-                    <span class="status-open">🏆 VINCENTE</span>
+                    <span class="status-open"> VINCENTE</span>
                     <% } else if (isWinning && !asta.isChiusa()) { %>
-                    <span class="status-open">👑 IN TESTA</span>
+                    <span class="status-open"> IN TESTA</span>
                     <% } else { %>
                     <span style="color: #666;">#<%= i + 1 %></span>
                     <% } %>

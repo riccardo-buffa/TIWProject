@@ -49,12 +49,12 @@ public class CreaAstaServlet extends HttpServlet {
                 articoliIds.add(Integer.parseInt(idStr));
             }
 
-            System.out.println("🎯 [Jakarta] Creazione asta con " + articoliIds.size() + " articoli per utente: " + utente.getUsername());
+            System.out.println(" Creazione asta con " + articoliIds.size() + " articoli per utente: " + utente.getUsername());
 
             // CONTROLLO: Verifica che gli articoli non siano già in altre aste attive
             List<Integer> articoliGiaInAsta = articoloDAO.getArticoliGiaInAsteAttive(articoliIds);
             if (!articoliGiaInAsta.isEmpty()) {
-                System.err.println("❌ [Jakarta] Articoli già in aste attive: " + articoliGiaInAsta);
+                System.err.println(" Articoli già in aste attive: " + articoliGiaInAsta);
 
                 // Trova i nomi degli articoli per il messaggio di errore
                 List<Articolo> articoliProblematici = articoloDAO.getArticoliByIds(articoliGiaInAsta);
@@ -77,12 +77,12 @@ public class CreaAstaServlet extends HttpServlet {
             List<Articolo> articoli = articoloDAO.getArticoliByIds(articoliIds);
             for (Articolo articolo : articoli) {
                 if (articolo.getProprietarioId() != utente.getId()) {
-                    System.err.println("❌ [Jakarta] Tentativo di inserire articolo non proprio: " + articolo.getCodice());
+                    System.err.println(" Tentativo di inserire articolo non proprio: " + articolo.getCodice());
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Non puoi inserire articoli che non ti appartengono");
                     return;
                 }
                 if (articolo.isVenduto()) {
-                    System.err.println("❌ [Jakarta] Tentativo di inserire articolo già venduto: " + articolo.getCodice());
+                    System.err.println(" Tentativo di inserire articolo già venduto: " + articolo.getCodice());
                     request.setAttribute("errore", "❌ L'articolo " + articolo.getCodice() + " è già stato venduto e non può essere inserito in un'asta.");
                     request.getRequestDispatcher("/WEB-INF/jsp/crea-asta-error.jsp").forward(request, response);
                     return;
@@ -104,23 +104,23 @@ public class CreaAstaServlet extends HttpServlet {
                 return;
             }
 
-            System.out.println("📊 [Jakarta] Prezzo iniziale: €" + prezzoIniziale + ", Rialzo: €" + rialzoMinimo + ", Scadenza: " + scadenza);
+            System.out.println(" Prezzo iniziale: €" + prezzoIniziale + ", Rialzo: €" + rialzoMinimo + ", Scadenza: " + scadenza);
 
             Asta asta = new Asta(prezzoIniziale, rialzoMinimo, scadenza, utente.getId());
 
             if (astaDAO.creaAsta(asta, articoliIds)) {
-                System.out.println("✅ [Jakarta] Asta creata con successo");
+                System.out.println(" Asta creata con successo");
                 response.sendRedirect("vendo");
             } else {
-                System.err.println("❌ [Jakarta] Errore creazione asta");
+                System.err.println(" Errore creazione asta");
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore nella creazione dell'asta");
             }
 
         } catch (NumberFormatException e) {
-            System.err.println("❌ [Jakarta] Errore formato numerico: " + e.getMessage());
+            System.err.println(" Errore formato numerico: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Formato numerico non valido");
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] Errore creazione asta: " + e.getMessage());
+            System.err.println(" Errore creazione asta: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore nella creazione dell'asta");
         }

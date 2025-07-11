@@ -26,37 +26,37 @@
 
   <!-- Form per creare nuovo articolo -->
   <div class="form-container">
-    <h2>🆕 Crea Nuovo Articolo</h2>
+    <h2> Crea Nuovo Articolo</h2>
     <form method="post" action="crea-articolo" enctype="multipart/form-data">
       <div class="form-group">
-        <label for="codice">📋 Codice:</label>
+        <label for="codice"> Codice:</label>
         <input type="text" id="codice" name="codice" placeholder="Es. ART001" required>
       </div>
       <div class="form-group">
-        <label for="nome">🏷️ Nome:</label>
+        <label for="nome"> Nome:</label>
         <input type="text" id="nome" name="nome" placeholder="Es. iPhone 14 Pro" required>
       </div>
       <div class="form-group">
-        <label for="descrizione">📝 Descrizione:</label>
+        <label for="descrizione"> Descrizione:</label>
         <textarea id="descrizione" name="descrizione" rows="3" placeholder="Descrizione dettagliata dell'articolo..." required></textarea>
       </div>
       <div class="form-group">
-        <label for="immagine">📷 Immagine:</label>
+        <label for="immagine"> Immagine:</label>
         <input type="file" id="immagine" name="immagine" accept=".jpg,.jpeg,.png,.gif">
         <small style="color: #666;">Formati supportati: JPG, PNG, GIF (max 10MB) - Opzionale</small>
       </div>
       <div class="form-group">
-        <label for="prezzo">💰 Prezzo (€):</label>
+        <label for="prezzo"> Prezzo (€):</label>
         <input type="number" step="0.01" id="prezzo" name="prezzo" min="0.01" placeholder="0.00" required>
       </div>
-      <button type="submit" class="btn btn-success">🚀 Crea Articolo</button>
+      <button type="submit" class="btn btn-success"> Crea Articolo</button>
     </form>
   </div>
 
   <!-- Form per creare nuova asta -->
   <% if (articoliDisponibili != null && !articoliDisponibili.isEmpty()) { %>
   <div class="form-container">
-    <h2>🎯 Crea Nuova Asta</h2>
+    <h2> Crea Nuova Asta</h2>
     <p style="color: #666; margin-bottom: 20px;">
       Seleziona uno o più articoli e imposta i parametri dell'asta.
     </p>
@@ -64,7 +64,7 @@
     <form method="post" action="crea-asta">
       <!-- Selezione Articoli -->
       <div class="form-group">
-        <label>📦 Seleziona Articoli da Mettere all'Asta:</label>
+        <label> Seleziona Articoli da Mettere all'Asta:</label>
         <div class="checkbox-list">
           <% for (Articolo articolo : articoliDisponibili) { %>
           <div class="checkbox-item">
@@ -74,7 +74,7 @@
                    value="<%= articolo.getId() %>">
             <label for="art<%= articolo.getId() %>">
               <strong><%= articolo.getCodice() %> - <%= articolo.getNome() %></strong>
-              <br>💰 €<%= String.format("%.2f", articolo.getPrezzo()) %>
+              <br> €<%= String.format("%.2f", articolo.getPrezzo()) %>
               <br><small style="color: #666;"><%= articolo.getDescrizione() %></small>
             </label>
           </div>
@@ -91,7 +91,7 @@
         </div>
 
         <div class="form-group">
-          <label for="scadenza">⏰ Scadenza Asta:</label>
+          <label for="scadenza"> Scadenza Asta:</label>
           <input type="text"
                  id="scadenza"
                  name="scadenza"
@@ -106,14 +106,14 @@
       <!-- Pulsante Crea Asta -->
       <div style="text-align: center; margin-top: 30px;">
         <button type="submit" class="btn btn-success" style="font-size: 18px; padding: 15px 30px;">
-          🚀 Crea Asta
+           Crea Asta
         </button>
       </div>
     </form>
   </div>
   <% } else { %>
   <div class="alert alert-info">
-    📦 <strong>Nessun articolo disponibile per creare aste.</strong>
+    <strong>Nessun articolo disponibile per creare aste.</strong>
     <br>Crea prima alcuni articoli usando il form sopra!
   </div>
   <% } %>
@@ -163,12 +163,12 @@
     <h3>🔴 Le Mie Aste Chiuse (<%= asteChiuse.size() %>)</h3>
     <table>
       <tr>
-        <th>📦 Articoli</th>
-        <th>💰 Prezzo Iniziale</th>
-        <th>💸 Prezzo Finale</th>
-        <th>🏆 Stato</th>
-        <th>📅 Data Chiusura</th>
-        <th>⚙️ Azioni</th>
+        <th> Articoli</th>
+        <th> Prezzo Iniziale</th>
+        <th> Prezzo Finale</th>
+        <th> Stato</th>
+        <th> Data Chiusura</th>
+        <th>️ Azioni</th>
       </tr>
       <% for (Asta asta : asteChiuse) { %>
       <tr style="<%= asta.getVincitoreId() != null ? "background-color: #f0f8ff;" : "background-color: #fff5f5;" %>">
@@ -208,11 +208,11 @@
         <td>
           <% if (asta.getVincitoreId() != null) { %>
           <div style="background: linear-gradient(135deg, #27ae60, #229954); color: white; padding: 8px 12px; border-radius: 15px; text-align: center;">
-            <strong>🏆 VENDUTO</strong>
+            <strong> VENDUTO</strong>
           </div>
           <% } else { %>
           <div style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 8px 12px; border-radius: 15px; text-align: center;">
-            <strong>❌ NON VENDUTO</strong>
+            <strong> NON VENDUTO</strong>
           </div>
           <% } %>
         </td>
@@ -242,7 +242,7 @@
 
   <% if ((asteAperte == null || asteAperte.isEmpty()) && (asteChiuse == null || asteChiuse.isEmpty())) { %>
   <div class="alert alert-info">
-    🎯 <strong>Nessuna asta creata ancora.</strong>
+     <strong>Nessuna asta creata ancora.</strong>
     <br>Crea alcuni articoli e poi la tua prima asta!
   </div>
   <% } %>

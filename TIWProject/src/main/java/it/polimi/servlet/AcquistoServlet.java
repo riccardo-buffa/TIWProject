@@ -42,7 +42,7 @@ public class AcquistoServlet extends HttpServlet {
         Utente utente = (Utente) session.getAttribute("utente");
         String parolaChiave = request.getParameter("ricerca");
 
-        System.out.println("🔍 [Jakarta] Accesso Acquisto per: " + utente.getUsername() +
+        System.out.println(" Accesso Acquisto per: " + utente.getUsername() +
                 (parolaChiave != null ? " - Ricerca: '" + parolaChiave + "'" : ""));
 
         try {
@@ -50,7 +50,7 @@ public class AcquistoServlet extends HttpServlet {
 
             // Carica sempre le aste vinte dall'utente
             List<Asta> asteVinte = astaDAO.getAsteVinte(utente.getId());
-            System.out.println("🏆 [Jakarta] Aste vinte caricate: " + asteVinte.size());
+            System.out.println(" Aste vinte caricate: " + asteVinte.size());
 
             // Crea mappa dei venditori per le aste vinte
             Map<Integer, Utente> venditoriMap = new HashMap<>();
@@ -59,7 +59,7 @@ public class AcquistoServlet extends HttpServlet {
                     Utente venditore = utenteDAO.getById(asta.getVenditoreId());
                     if (venditore != null) {
                         venditoriMap.put(asta.getVenditoreId(), venditore);
-                        System.out.println("👤 [Jakarta] Venditore caricato: " + venditore.getNomeCompleto() + " per asta " + asta.getId());
+                        System.out.println(" Venditore caricato: " + venditore.getNomeCompleto() + " per asta " + asta.getId());
                     }
                 }
             }
@@ -67,7 +67,7 @@ public class AcquistoServlet extends HttpServlet {
             // Gestione ricerca aste
             if (parolaChiave != null && !parolaChiave.trim().isEmpty()) {
                 aste = astaDAO.cercaAste(parolaChiave.trim());
-                System.out.println("📊 [Jakarta] Risultati ricerca: " + (aste != null ? aste.size() : 0) + " aste");
+                System.out.println(" Risultati ricerca: " + (aste != null ? aste.size() : 0) + " aste");
             }
 
             // Imposta attributi per la JSP
@@ -76,15 +76,10 @@ public class AcquistoServlet extends HttpServlet {
             request.setAttribute("aste", aste);
             request.setAttribute("asteVinte", asteVinte);
             request.setAttribute("venditoriMap", venditoriMap);
-
-            System.out.println("✅ [Jakarta] Dati caricati - Ricerca: " + (aste != null ? aste.size() : 0) +
-                    ", Aste vinte: " + asteVinte.size() +
-                    ", Venditori: " + venditoriMap.size());
-
             request.getRequestDispatcher("/WEB-INF/jsp/acquisto.jsp").forward(request, response);
 
         } catch (Exception e) {
-            System.err.println("❌ [Jakarta] Errore caricamento pagina Acquisto: " + e.getMessage());
+            System.err.println(" Errore caricamento pagina Acquisto: " + e.getMessage());
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore caricamento dati");
         }

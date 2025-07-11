@@ -27,11 +27,10 @@ public class ArticoloDAO {
             stmt.setBoolean(7, articolo.isVenduto());
 
             int result = stmt.executeUpdate();
-            System.out.println("✅ [DAO] Articolo creato: " + articolo.getCodice());
             return result > 0;
 
         } catch (SQLException e) {
-            System.err.println("❌ [DAO] Errore creazione articolo: " + e.getMessage());
+            System.err.println(" Errore creazione articolo: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -60,8 +59,6 @@ public class ArticoloDAO {
 
         List<Integer> articoliGiaInAsta = new ArrayList<>();
 
-        System.out.println("🔍 [DAO] Controllo articoli già in aste attive per: " + articoliIds);
-
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
 
@@ -74,18 +71,17 @@ public class ArticoloDAO {
                 while (rs.next()) {
                     int articoloId = rs.getInt("articolo_id");
                     articoliGiaInAsta.add(articoloId);
-                    System.out.println("⚠️ [DAO] Articolo " + articoloId + " già in un'asta attiva");
                 }
             }
 
             if (articoliGiaInAsta.isEmpty()) {
-                System.out.println("✅ [DAO] Nessun articolo in aste attive - OK per creare nuova asta");
+                System.out.println(" Nessun articolo in aste attive - OK per creare nuova asta");
             } else {
-                System.out.println("❌ [DAO] Trovati " + articoliGiaInAsta.size() + " articoli già in aste attive");
+                System.out.println(" Trovati " + articoliGiaInAsta.size() + " articoli già in aste attive");
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ [DAO] Errore controllo articoli in aste attive: " + e.getMessage());
+            System.err.println(" Errore controllo articoli in aste attive: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -106,8 +102,6 @@ public class ArticoloDAO {
 
         List<Articolo> articoli = new ArrayList<>();
 
-        System.out.println("🔍 [DAO] Caricamento articoli disponibili per proprietario " + proprietarioId);
-
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -120,10 +114,8 @@ public class ArticoloDAO {
                 }
             }
 
-            System.out.println("✅ [DAO] Trovati " + articoli.size() + " articoli disponibili per creare aste");
-
         } catch (SQLException e) {
-            System.err.println("❌ [DAO] Errore get articoli disponibili: " + e.getMessage());
+            System.err.println(" Errore get articoli disponibili: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -164,7 +156,7 @@ public class ArticoloDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ [DAO] Errore get articoli by IDs: " + e.getMessage());
+            System.err.println(" Errore get articoli by IDs: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -192,10 +184,9 @@ public class ArticoloDAO {
             }
 
             stmt.executeUpdate();
-            System.out.println("✅ [DAO] Marcati " + articoliIds.size() + " articoli come venduti");
 
         } catch (SQLException e) {
-            System.err.println("❌ [DAO] Errore marca venduti: " + e.getMessage());
+            System.err.println(" Errore marca venduti: " + e.getMessage());
             e.printStackTrace();
         }
     }
