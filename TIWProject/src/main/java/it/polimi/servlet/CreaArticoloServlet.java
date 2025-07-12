@@ -61,7 +61,6 @@ public class CreaArticoloServlet extends HttpServlet {
             if (filePart != null && filePart.getSize() > 0) {
                 nomeFileImmagine = salvaImmagine(filePart, request);
                 if (nomeFileImmagine == null) {
-                    // Errore nel salvare l'immagine
                     request.setAttribute("errore", " Errore nel caricamento dell'immagine. Formati supportati: JPG, PNG, GIF (max 10MB)");
                     request.setAttribute("codice", codice);
                     request.setAttribute("nome", nome);
@@ -108,7 +107,7 @@ public class CreaArticoloServlet extends HttpServlet {
         String fileName = getFileName(filePart);
 
         if (fileName == null || fileName.isEmpty()) {
-            System.err.println("❌ [Upload] Nome file vuoto");
+            System.err.println(" Nome file vuoto");
             return null;
         }
 
@@ -123,13 +122,13 @@ public class CreaArticoloServlet extends HttpServlet {
         }
 
         if (!validExtension) {
-            System.err.println("❌ [Upload] Estensione non valida: " + fileExtension);
+            System.err.println(" Estensione non valida: " + fileExtension);
             return null;
         }
 
         // Verifica dimensione
         if (filePart.getSize() > MAX_FILE_SIZE) {
-            System.err.println("❌ [Upload] File troppo grande: " + filePart.getSize() + " bytes");
+            System.err.println(" File troppo grande: " + filePart.getSize() + " bytes");
             return null;
         }
 
@@ -143,7 +142,6 @@ public class CreaArticoloServlet extends HttpServlet {
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
-            System.out.println("📁 [Upload] Creata directory: " + uploadPath);
         }
 
         // Salva il file
@@ -151,10 +149,9 @@ public class CreaArticoloServlet extends HttpServlet {
 
         try (InputStream input = filePart.getInputStream()) {
             Files.copy(input, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("✅ [Upload] Immagine salvata: " + uniqueFileName);
             return uniqueFileName;
         } catch (IOException e) {
-            System.err.println("❌ [Upload] Errore salvataggio file: " + e.getMessage());
+            System.err.println(" Errore salvataggio file: " + e.getMessage());
             return null;
         }
     }
@@ -171,10 +168,9 @@ public class CreaArticoloServlet extends HttpServlet {
 
             File file = new File(filePath);
             if (file.exists() && file.delete()) {
-                System.out.println("🗑️ [Upload] Immagine eliminata: " + nomeFile);
             }
         } catch (Exception e) {
-            System.err.println("❌ [Upload] Errore eliminazione file: " + e.getMessage());
+            System.err.println(" Errore eliminazione file: " + e.getMessage());
         }
     }
 
