@@ -197,7 +197,7 @@
 
             <!-- Riepilogo spesa -->
             <div style="background-color: #d1ecf1; padding: 8px; border-radius: 5px; text-align: center; font-size: 11px;">
-              <strong style="color: #0c5460;">💳 Pagato</strong><br>
+              <strong style="color: #0c5460;"> Pagato</strong><br>
               <span style="color: #0c5460; font-weight: bold;">€<%= String.format("%.2f", asta.getPrezzoFinale()) %></span>
             </div>
 
@@ -214,9 +214,6 @@
   <% } %>
 
   <% if (aste == null && (asteVinte == null || asteVinte.isEmpty())) { %>
-  <div class="alert alert-info">
-    🛒 <strong>Inizia a cercare!</strong> Usa il campo di ricerca sopra per trovare aste interessanti.
-  </div>
   <% } %>
 </div>
 

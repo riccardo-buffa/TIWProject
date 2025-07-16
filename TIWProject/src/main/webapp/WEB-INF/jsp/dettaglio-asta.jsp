@@ -151,14 +151,6 @@
                         <p style="margin: 0; font-size: 24px; font-weight: bold; color: #27ae60;">
                             €<%= String.format("%.2f", asta.getPrezzoFinale()) %>
                         </p>
-                        <%
-                            double incremento = asta.getPrezzoFinale() - asta.getPrezzoIniziale();
-                            double percentualeIncremento = (incremento / asta.getPrezzoIniziale()) * 100;
-                        %>
-                        <p style="margin: 5px 0 0 0; color: #666;">
-                            +€<%= String.format("%.2f", incremento) %>
-                            (<%= String.format("%.1f", percentualeIncremento) %>%)
-                        </p>
                     </div>
                 </div>
             </div>

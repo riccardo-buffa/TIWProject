@@ -21,10 +21,10 @@
 <div class="header">
   <h1>💰 Fai Offerta</h1>
   <div class="nav-links">
-    <a href="home">🏠 Home</a>
-    <a href="vendo">📦 Vendo</a>
-    <a href="acquisto">🛒 Acquisto</a>
-    <a href="login.html">🚪 Logout</a>
+    <a href="home"> Home</a>
+    <a href="vendo"> Vendo</a>
+    <a href="acquisto"> Acquisto</a>
+    <a href="login.html"> Logout</a>
   </div>
 </div>
 
@@ -42,7 +42,7 @@
 
   <!-- Dettagli articoli -->
   <div class="form-container">
-    <h2>📦 Articoli in Asta #<%= asta.getId() %></h2>
+    <h2> Articoli in Asta #<%= asta.getId() %></h2>
     <% for (Articolo art : asta.getArticoli()) { %>
     <div style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; background-color: #f9f9f9;">
       <h4 style="color: #2c3e50; margin-bottom: 15px;">
@@ -56,13 +56,13 @@
              style="max-width: 200px; height: auto; border-radius: 5px;">
         <% } else { %>
         <div style="width: 200px; height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
-          📷 Nessuna immagine
+           Nessuna immagine
         </div>
         <% } %>
       </div>
       <% } %>
       <p style="font-size: 18px; font-weight: bold; color: #27ae60;">
-        💰 Prezzo base: €<%= String.format("%.2f", art.getPrezzo()) %>
+         Prezzo base: €<%= String.format("%.2f", art.getPrezzo()) %>
       </p>
     </div>
     <% } %>
@@ -71,25 +71,25 @@
   <!-- Form offerta (solo se asta aperta) -->
   <% if (!asta.isChiusa() && !asta.isScaduta()) { %>
   <div class="form-container">
-    <h2>💰 Fai la tua Offerta</h2>
+    <h2> Fai la tua Offerta</h2>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
       <div style="background-color: #e8f5e8; padding: 15px; border-radius: 8px;">
-        <strong>💵 Offerta Attuale:</strong>
+        <strong> Offerta Attuale:</strong>
         <p style="font-size: 20px; font-weight: bold; color: #27ae60; margin: 5px 0;">
           €<%= String.format("%.2f", asta.getOffertaMassima()) %>
         </p>
       </div>
 
       <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px;">
-        <strong>📈 Offerta Minima:</strong>
+        <strong> Offerta Minima:</strong>
         <p style="font-size: 20px; font-weight: bold; color: #e74c3c; margin: 5px 0;">
           €<%= String.format("%.2f", minimaRichiesta) %>
         </p>
       </div>
 
       <div style="background-color: #d1ecf1; padding: 15px; border-radius: 8px;">
-        <strong>⏰ Scadenza:</strong>
+        <strong> Scadenza:</strong>
         <p style="font-size: 16px; font-weight: bold; margin: 5px 0;">
           <%= DateUtil.formatDateTime(asta.getScadenza()) %>
         </p>
@@ -102,7 +102,7 @@
     <form method="post" action="offerta">
       <input type="hidden" name="astaId" value="<%= asta.getId() %>">
       <div class="form-group">
-        <label for="importo">💰 La tua Offerta (€):</label>
+        <label for="importo"> La tua Offerta (€):</label>
         <input type="number" step="0.01" id="importo" name="importo"
                min="<%= String.format("%.2f", minimaRichiesta) %>"
                placeholder="<%= String.format("%.2f", minimaRichiesta) %>"
@@ -112,13 +112,13 @@
       <button type="submit" class="btn btn-success"
               style="font-size: 18px; padding: 15px 30px;"
               onclick="return confirm('Confermi di voler fare questa offerta?')">
-        🚀 Invia Offerta
+         Invia Offerta
       </button>
     </form>
   </div>
   <% } else { %>
   <div class="alert alert-error">
-    🚫 <strong>Asta non più disponibile.</strong>
+     <strong>Asta non più disponibile.</strong>
     Questa asta è <%= asta.isChiusa() ? "chiusa" : "scaduta" %>.
     Non è più possibile fare offerte.
   </div>
@@ -127,7 +127,7 @@
   <!-- Lista offerte -->
   <% if (offerte != null && !offerte.isEmpty()) { %>
   <div class="table-container">
-    <h3>📊 Cronologia Offerte (<%= offerte.size() %>)</h3>
+    <h3> Cronologia Offerte (<%= offerte.size() %>)</h3>
     <table>
       <tr>
         <th> Offerente</th>
